@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="orange_500">#F97316</color>
+    <color name="gray">#BEBEBE</color>
+
+    <!-- BMI Category Colors -->
+    <color name="bmi_underweight">#3B82F6</color> <!-- Blue -->
+    <color name="bmi_normal">#10B981</color>      <!-- Green -->
+    <color name="bmi_overweight">#FACC15</color>  <!-- Yellow -->
+    <color name="bmi_obese">#EF4444</color>       <!-- Red -->
+</resources>

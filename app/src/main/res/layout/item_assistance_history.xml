@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cardContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/assistance_card_background"
+    android:padding="20dp"
+    android:layout_marginBottom="16dp"
+    android:elevation="4dp">
+
+    <!-- Row: Category + Status Bubble -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/txtCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Category: Other"
+            android:textStyle="bold"
+            android:textColor="#F97316"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/status_pending_background" />
+    </LinearLayout>
+
+    <!-- Replies Container -->
+    <LinearLayout
+        android:id="@+id/txtReplies"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="12dp" />
+
+    <!-- Typing Indicator -->
+    <TextView
+        android:id="@+id/coachTypingLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coach is typing..."
+        android:textColor="#9CA3AF"
+        android:textStyle="italic"
+        android:textSize="13sp"
+        android:layout_marginTop="6dp"
+        android:visibility="gone" />
+
+    <!-- Reply Box Area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REPLY"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/orange_rounded_button" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/editReply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type your reply here..."
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:textColor="#111827"
+        android:textSize="14sp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:visibility="gone"
+        android:layout_marginTop="12dp" />
+
+    <Button
+        android:id="@+id/btnSendReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND REPLY"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/orange_rounded_button"
+        android:visibility="gone"
+        android:layout_gravity="end" />
+
+</LinearLayout>

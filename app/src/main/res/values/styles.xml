@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Active Dash -->
+    <style name="ProgressDashActive">
+        <item name="android:layout_width">26dp</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:background">#F97316</item>
+        <item name="android:layout_marginEnd">6dp</item>
+    </style>
+
+    <!-- Inactive Dash -->
+    <style name="ProgressDashInactive">
+        <item name="android:layout_width">26dp</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:background">#E0E0E0</item>
+        <item name="android:layout_marginEnd">6dp</item>
+    </style>
+
+    <!-- No Margin Style for Last Dash -->
+    <style name="ProgressDashInactiveNoMargin">
+        <item name="android:layout_width">26dp</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:background">#E0E0E0</item>
+    </style>
+
+    <!-- Picker -->
+    <style name="NumberPickerStyle">
+        <item name="android:textColor">@color/orange_500</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="UnitPickerStyle">
+        <item name="android:textColor">@color/orange_500</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+</resources>

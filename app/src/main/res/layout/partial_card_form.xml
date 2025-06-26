@@ -1,0 +1,56 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="4dp">
+
+    <EditText
+        android:id="@+id/cardNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Card Number"
+        android:inputType="number"
+        android:background="@drawable/edit_text_background_selector"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/cardName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Cardholder Name"
+        android:inputType="textPersonName"
+        android:background="@drawable/edit_text_background_selector"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- MM/YY + CVV Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp"
+        android:weightSum="2">
+
+        <EditText
+            android:id="@+id/cardExpiry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="MM/YY"
+            android:inputType="text"
+            android:background="@drawable/edit_text_background_selector"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp" />
+
+        <EditText
+            android:id="@+id/cardCvv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="CVV"
+            android:inputType="numberPassword"
+            android:background="@drawable/edit_text_background_selector"
+            android:padding="12dp" />
+    </LinearLayout>
+</LinearLayout>

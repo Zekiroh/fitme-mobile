@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Internet permission for API calls -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.FitMe"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+
+        <!-- Main Page (Bottom Navigation Host) -->
+        <activity
+            android:name=".main.MainActivity"
+            android:label="FitMe"
+            android:theme="@style/Theme.FitMe" />
+
+        <!-- Info Pages -->
+        <activity
+            android:name=".info.PrivacyPolicyActivity"
+            android:label="Privacy Policy"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".info.TermsOfUseActivity"
+            android:label="Terms of Use"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".info.PasswordRecoveryActivity"
+            android:label="Password Recovery"
+            android:theme="@style/Theme.FitMe" />
+
+        <!-- Auth Pages -->
+        <activity
+            android:name=".auth.LoginActivity"
+            android:exported="true"
+            android:label="FitMe"
+            android:theme="@style/Theme.FitMe">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".auth.AccountInfoActivity"
+            android:label="Register"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".auth.PathSelectionActivity"
+            android:label="Choose Path"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".auth.MembershipPlanActivity"
+            android:label="Membership Plan"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".auth.PaymentMethodActivity"
+            android:label="Payment Method"
+            android:theme="@style/Theme.FitMe" />
+
+        <!-- Payment Result Screens -->
+        <activity
+            android:name=".auth.FreeSuccessActivity"
+            android:label="Success"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".auth.SuccessActivity"
+            android:label="Success"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".auth.CashPendingActivity"
+            android:label="Pending Verification"
+            android:theme="@style/Theme.FitMe" />
+
+        <!-- Assessment Pages -->
+        <activity
+            android:name=".onboarding.AssessmentGenderActivity"
+            android:label="Assessment - Gender"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".onboarding.AssessmentGoalActivity"
+            android:label="Assessment - Fitness Plan"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".onboarding.AssessmentFrequencyActivity"
+            android:label="Assessment - Experience Level"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".onboarding.AssessmentHeightActivity"
+            android:label="Assessment - Weight"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".onboarding.AssessmentWeightActivity"
+            android:label="Assessment - Height"
+            android:theme="@style/Theme.FitMe" />
+        <activity
+            android:name=".onboarding.AssessmentCompleteActivity"
+            android:label="Assessment Completed"
+            android:theme="@style/Theme.FitMe" />
+    </application>
+
+</manifest>

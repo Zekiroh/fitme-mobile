@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FitMe</string>
+
+    <string name="privacy_policy_html">
+    <![CDATA[
+        <p><b>Effective Date:</b> June 30, 2025</p>
+        <p><b>FitMe</b> is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application FitMe, which enables gym coaches to manage member attendance and subscription fees, and allows users to track their workout progress.</p>
+
+        <p><b>1. Information We Collect</b><br/>
+        Personal Information:<br/>
+        • Name and email<br/>
+        • Account login credentials<br/>
+        • Subscription status and payment history<br/>
+        • Workout records and fitness progress<br/>
+        • Attendance logs recorded by coaches</p>
+
+        <p><b>2. How We Use Your Information</b><br/>
+        • To allow coaches to monitor attendance and workout progress<br/>
+        • To help users track fitness progress<br/>
+        • To manage subscriptions and payments<br/>
+        • To improve the App’s performance and user experience<br/>
+        • To provide customer support and updates</p>
+
+        <p><b>3. Data Sharing</b><br/>
+        We may share your data with Coaches affiliated with your gym for attendance and progress monitoring.<br/>
+        We do not sell your personal data.</p>
+
+        <p><b>4. Data Security</b><br/>
+        We use secure servers and encryption to protect your information. However, no system is 100% secure.</p>
+
+        <p><b>5. Your Rights</b><br/>
+        You may view, update, or delete your account and data.</p>
+
+        <p><b>6. Updates to This Policy</b><br/>
+        We may modify this Privacy Policy. Changes will be posted within the App.</p>
+
+        <p><b>7. Contact Us</b><br/>
+        For questions or requests, email us at:
+        <a href="mailto:samsantech.feud@gmail.com" style="color:#F97316;">samsantech.feud@gmail.com</a></p>
+    ]]>
+    </string>
+
+    <string name="terms_of_use_html"><![CDATA[
+    <p><b>Effective Date:</b> June 30, 2025</p>
+
+    <p>These Terms govern your access and use of <b>FitMe</b>, a mobile app designed to support fitness gym management and member engagement.</p>
+
+    <p><b>1. Account Registration</b><br/>
+    To use the App, you must:<br/>
+    • Provide accurate personal information<br/>
+    • Keep your login credentials secure</p>
+
+    <p><b>2. User and Coach Responsibilities</b><br/>
+    • Users are responsible for the accuracy of your workout progress logs.<br/>
+    • Coaches must use user data ethically and only for gym-related purposes.</p>
+
+    <p><b>3. Use Restrictions</b><br/>
+    Do not:<br/>
+    • Misuse the App for fraudulent or illegal purposes<br/>
+    • Attempt to hack, reverse engineer, or disrupt the App<br/>
+    • Share other users&#39; information without consent</p>
+
+    <p><b>4. Intellectual Property</b><br/>
+    All content in the App (except user-uploaded content) is owned by us or our licensors.<br/>
+    You may not reuse it without permission.</p>
+
+    <p><b>5. Subscription and Fees</b><br/>
+    Any payment information must be accurate and authorized.</p>
+
+    <p><b>6. Termination</b><br/>
+    We may suspend or terminate your account for violating these Terms.</p>
+
+    <p><b>7. Disclaimers</b><br/>
+    The App is provided &quot;as is.&quot; We are not responsible for injuries or outcomes resulting from workouts tracked using the App.</p>
+
+    <p><b>8. Limitation of Liability</b><br/>
+    We are not liable for indirect damages, including lost data, workout errors, or subscription issues beyond our control.</p>
+
+    <p><b>9. Contact Us</b><br/>
+    For support or legal questions, email us at:
+    <a href="mailto:samsantech.feud@gmail.com" style="color:#F97316;">samsantech.feud@gmail.com</a></p>
+    ]]>
+    </string>
+
+</resources>
