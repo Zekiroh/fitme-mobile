@@ -4,9 +4,21 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.samsantech.fitme.api.AuthService
 import com.samsantech.fitme.api.AssistanceService
+import android.util.Log // Added for debugging
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:5000/" // use 10.0.2.2 for Android emulator
+    private const val LOCAL_URL = "http://10.0.2.2:5000/"
+    private const val PROD_URL = "https://fitmegym.com/api/"
+
+    // Change this value to switch environment
+    private const val USE_LOCAL = false
+
+    private val BASE_URL = if (USE_LOCAL) LOCAL_URL else PROD_URL
+
+    // Debug log to confirm which URL is used
+    init {
+        Log.d("FitMeBaseURL", "Base URL: $BASE_URL")
+    }
 
     val instance: AuthService by lazy {
         Retrofit.Builder()

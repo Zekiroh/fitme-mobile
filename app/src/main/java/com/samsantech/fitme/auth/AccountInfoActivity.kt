@@ -23,20 +23,12 @@ class AccountInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_info)
 
-        // FitMe branding
         val fitMeText = findViewById<TextView>(R.id.textFitMe)
         val styledText = SpannableString("FitMe")
-        styledText.setSpan(
-            ForegroundColorSpan(Color.parseColor("#F97316")), 0, 3,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        styledText.setSpan(
-            ForegroundColorSpan(Color.parseColor("#BEBEBE")), 3, 5,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        styledText.setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        styledText.setSpan(ForegroundColorSpan(Color.parseColor("#BEBEBE")), 3, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         fitMeText.text = styledText
 
-        // Input Fields
         val fullNameInput = findViewById<EditText>(R.id.editTextFullName)
         val usernameInput = findViewById<EditText>(R.id.editTextUsername)
         val emailInput = findViewById<EditText>(R.id.editTextEmail)
@@ -46,10 +38,8 @@ class AccountInfoActivity : AppCompatActivity() {
         val confirmPasswordToggle = findViewById<ImageView>(R.id.confirmPasswordToggle)
         val nextButton = findViewById<Button>(R.id.buttonNext)
 
-        // Button starts disabled
         nextButton.isEnabled = false
 
-        // Real-time enable logic
         val watcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val allFilled = fullNameInput.text.isNotEmpty() &&
@@ -67,14 +57,12 @@ class AccountInfoActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         }
 
-        // Attach to all inputs
         fullNameInput.addTextChangedListener(watcher)
         usernameInput.addTextChangedListener(watcher)
         emailInput.addTextChangedListener(watcher)
         passwordInput.addTextChangedListener(watcher)
         confirmPasswordInput.addTextChangedListener(watcher)
 
-        // Toggle visibility
         passwordToggle.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
             passwordInput.inputType = if (isPasswordVisible)
@@ -84,9 +72,7 @@ class AccountInfoActivity : AppCompatActivity() {
 
             passwordInput.typeface = Typeface.DEFAULT
             passwordInput.setSelection(passwordInput.text.length)
-            passwordToggle.setImageResource(
-                if (isPasswordVisible) R.drawable.ic_eye_hide else R.drawable.ic_eye_show
-            )
+            passwordToggle.setImageResource(if (isPasswordVisible) R.drawable.ic_eye_hide else R.drawable.ic_eye_show)
         }
 
         confirmPasswordToggle.setOnClickListener {
@@ -98,12 +84,9 @@ class AccountInfoActivity : AppCompatActivity() {
 
             confirmPasswordInput.typeface = Typeface.DEFAULT
             confirmPasswordInput.setSelection(confirmPasswordInput.text.length)
-            confirmPasswordToggle.setImageResource(
-                if (isConfirmPasswordVisible) R.drawable.ic_eye_hide else R.drawable.ic_eye_show
-            )
+            confirmPasswordToggle.setImageResource(if (isConfirmPasswordVisible) R.drawable.ic_eye_hide else R.drawable.ic_eye_show)
         }
 
-        // Redirect to Login screen
         val loginText = findViewById<TextView>(R.id.textLogin)
         val loginSpannable = SpannableString(" Login")
         loginSpannable.setSpan(UnderlineSpan(), 0, loginSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -113,12 +96,32 @@ class AccountInfoActivity : AppCompatActivity() {
             finish()
         }
 
-        // Next button logic to Page 2
         nextButton.setOnClickListener {
             val fullName = fullNameInput.text.toString().trim()
             val username = usernameInput.text.toString().trim()
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString()
+            val confirmPassword = confirmPasswordInput.text.toString()
+
+            if (fullName.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                Toast.makeText(this, "All fields are required.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Invalid email format.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password.length < 8) {
+                Toast.makeText(this, "Password must be at least 8 characters.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password != confirmPassword) {
+                Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             val intent = Intent(this, PathSelectionActivity::class.java)
             intent.putExtra("fullName", fullName)

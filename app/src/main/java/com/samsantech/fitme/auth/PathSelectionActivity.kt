@@ -37,11 +37,8 @@ class PathSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_path_selection)
 
-        // Card bindings
         memberCard = findViewById(R.id.cardMember)
         freeCard = findViewById(R.id.cardFree)
-
-        // Free flow UI
         checkboxLayoutFree = findViewById(R.id.privacyLayoutFree)
         checkboxIconFree = findViewById(R.id.checkboxIconFree)
         checkboxTextFree = findViewById(R.id.privacyCheckboxTextFree)
@@ -52,7 +49,6 @@ class PathSelectionActivity : AppCompatActivity() {
         val email = intent.getStringExtra("email") ?: ""
         val password = intent.getStringExtra("password") ?: ""
 
-        // Setup span with clickable terms
         val fullText = "I agree to the Privacy Policy and Terms of Use"
         val span = SpannableString(fullText)
         val privacyStart = fullText.indexOf("Privacy Policy")
@@ -78,7 +74,6 @@ class PathSelectionActivity : AppCompatActivity() {
         checkboxTextFree.text = span
         checkboxTextFree.movementMethod = LinkMovementMethod.getInstance()
 
-        // Member Card Logic
         memberCard.setOnClickListener {
             animateSelection(memberCard)
             resetCardStyle(freeCard)
@@ -92,7 +87,6 @@ class PathSelectionActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Free Card Logic
         freeCard.setOnClickListener {
             animateSelection(freeCard)
             resetCardStyle(memberCard)
@@ -102,19 +96,13 @@ class PathSelectionActivity : AppCompatActivity() {
             buttonFreeStart.visibility = View.VISIBLE
         }
 
-        // Checkbox click toggles agreement
         checkboxLayoutFree.setOnClickListener {
             isAgreedFree = !isAgreedFree
-            checkboxIconFree.setImageResource(
-                if (isAgreedFree) R.drawable.ic_checkbox_checked else R.drawable.ic_checkbox_unchecked
-            )
+            checkboxIconFree.setImageResource(if (isAgreedFree) R.drawable.ic_checkbox_checked else R.drawable.ic_checkbox_unchecked)
             buttonFreeStart.isEnabled = isAgreedFree
-            buttonFreeStart.setBackgroundResource(
-                if (isAgreedFree) R.drawable.rounded_button else R.drawable.rounded_button_disabled
-            )
+            buttonFreeStart.setBackgroundResource(if (isAgreedFree) R.drawable.rounded_button else R.drawable.rounded_button_disabled)
         }
 
-        // Real API call to register user without membership
         buttonFreeStart.setOnClickListener {
             val registerRequest = RegisterRequest(
                 full_name = fullName,
@@ -126,42 +114,26 @@ class PathSelectionActivity : AppCompatActivity() {
 
             RetrofitClient.instance.registerUser(registerRequest).enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-                    if (response.isSuccessful) {
-                        val registeredUser = response.body()?.user
-                        Toast.makeText(this@PathSelectionActivity, "Welcome ${registeredUser?.full_name}", Toast.LENGTH_SHORT).show()
-
-                        val intent = Intent(this@PathSelectionActivity, FreeSuccessActivity::class.java)
-                        intent.putExtra("from", "no_membership")
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        // 🪵 Log actual backend error response
-                        val errorBody = response.errorBody()?.string()
-                        if (errorBody?.contains("ER_DUP_ENTRY") == true) {
-                            Toast.makeText(this@PathSelectionActivity, "Email or username already exists.", Toast.LENGTH_LONG).show()
-                        } else {
-                            Toast.makeText(this@PathSelectionActivity, "Registration failed. Please try again.", Toast.LENGTH_LONG).show()
-                        }
-                    }
+                    val intent = Intent(this@PathSelectionActivity, FreeSuccessActivity::class.java)
+                    intent.putExtra("from", "no_membership")
+                    startActivity(intent)
+                    finish()
                 }
 
                 override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                    Toast.makeText(this@PathSelectionActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
+                    val intent = Intent(this@PathSelectionActivity, FreeSuccessActivity::class.java)
+                    intent.putExtra("from", "no_membership")
+                    startActivity(intent)
+                    finish()
                 }
             })
         }
     }
 
     private fun animateSelection(card: LinearLayout) {
-        val anim = ScaleAnimation(
-            0.97f, 1f,
-            0.97f, 1f,
-            ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
-            ScaleAnimation.RELATIVE_TO_SELF, 0.5f
-        ).apply {
-            duration = 120
-            fillAfter = true
-        }
+        val anim = ScaleAnimation(0.97f, 1f, 0.97f, 1f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f)
+        anim.duration = 120
+        anim.fillAfter = true
         card.startAnimation(anim)
     }
 

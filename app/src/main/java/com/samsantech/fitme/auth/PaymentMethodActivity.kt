@@ -35,8 +35,8 @@ class PaymentMethodActivity : AppCompatActivity() {
 
         val fitMeText = findViewById<TextView>(R.id.textFitMe)
         val styledText = SpannableString("FitMe").apply {
-            setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(ForegroundColorSpan(Color.parseColor("#BEBEBE")), 3, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), 0, 3, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(ForegroundColorSpan(Color.parseColor("#BEBEBE")), 3, 5, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         fitMeText.text = styledText
 
@@ -74,16 +74,16 @@ class PaymentMethodActivity : AppCompatActivity() {
             override fun onClick(widget: View) {
                 startActivity(Intent(this@PaymentMethodActivity, PrivacyPolicyActivity::class.java))
             }
-        }, privacyStart, privacyEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }, privacyStart, privacyEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         span.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 startActivity(Intent(this@PaymentMethodActivity, TermsOfUseActivity::class.java))
             }
-        }, termsStart, termsEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }, termsStart, termsEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        span.setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), privacyStart, privacyEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        span.setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), termsStart, termsEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        span.setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), privacyStart, privacyEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        span.setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), termsStart, termsEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         privacyTextView.text = span
         privacyTextView.movementMethod = LinkMovementMethod.getInstance()
@@ -106,9 +106,7 @@ class PaymentMethodActivity : AppCompatActivity() {
         fun validateForm() {
             val canProceed = isFormValid(selectedMethod)
             buttonPay.isEnabled = canProceed
-            buttonPay.setBackgroundResource(
-                if (canProceed) R.drawable.rounded_button else R.drawable.rounded_button_disabled
-            )
+            buttonPay.setBackgroundResource(if (canProceed) R.drawable.rounded_button else R.drawable.rounded_button_disabled)
         }
 
         checkboxLayout.setOnClickListener {
@@ -235,7 +233,7 @@ class PaymentMethodActivity : AppCompatActivity() {
 
             RetrofitClient.instance.registerUser(request).enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-                    if (response.isSuccessful) {
+                    if (response.isSuccessful && response.body()?.success == true) {
                         val intent = when (selectedMethod) {
                             "CASH" -> Intent(this@PaymentMethodActivity, CashPendingActivity::class.java)
                             else -> Intent(this@PaymentMethodActivity, SuccessActivity::class.java)
@@ -243,8 +241,8 @@ class PaymentMethodActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        val errorBody = response.errorBody()?.string()
-                        Toast.makeText(this@PaymentMethodActivity, "Registration failed: $errorBody", Toast.LENGTH_LONG).show()
+                        val errorMsg = response.body()?.message ?: "Registration failed. Please try again."
+                        Toast.makeText(this@PaymentMethodActivity, errorMsg, Toast.LENGTH_LONG).show()
                     }
                 }
 

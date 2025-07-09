@@ -85,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
                             val user = response.body()?.user
 
                             if (user != null) {
-                                // ✅ Save to SharedPreferences
+                                // Save to SharedPreferences
                                 val sharedPref = getSharedPreferences("FitMePrefs", Context.MODE_PRIVATE)
                                 sharedPref.edit().apply {
                                     putInt("user_id", user.id)

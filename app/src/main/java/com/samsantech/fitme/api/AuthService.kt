@@ -10,10 +10,10 @@ import retrofit2.http.POST
 
 interface AuthService {
     // Mobile login (members only)
-    @POST("api/auth/login-member")
+    @POST("auth/login")
     fun loginUser(@Body request: LoginRequest): Call<LoginResponse>
 
     // Register new mobile user
-    @POST("api/auth/register-member")
+    @POST("auth/register-member")
     fun registerUser(@Body request: RegisterRequest): Call<RegisterResponse>
 }
