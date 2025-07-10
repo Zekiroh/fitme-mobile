@@ -7,10 +7,12 @@ import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import com.samsantech.fitme.R
 import com.samsantech.fitme.api.RetrofitClient
 import com.samsantech.fitme.info.PrivacyPolicyActivity
@@ -208,6 +210,13 @@ class PaymentMethodActivity : AppCompatActivity() {
             val password = intent.getStringExtra("password") ?: ""
             val selectedPrice = intent.getStringExtra("selectedPrice")?.replace("₱", "")?.replace(",", "") ?: ""
 
+            val priceInt = selectedPrice.toIntOrNull() ?: 0
+
+            if (priceInt == 0) {
+                Toast.makeText(this, "Invalid price. Cannot proceed.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
             val gcashNumber: String? = findViewById<EditText?>(R.id.gcashNumber)?.text?.toString()?.trim()
             val gcashName: String? = findViewById<EditText?>(R.id.gcashName)?.text?.toString()?.trim()
             val cardNumber: String? = findViewById<EditText?>(R.id.cardNumber)?.text?.toString()?.trim()
@@ -221,15 +230,17 @@ class PaymentMethodActivity : AppCompatActivity() {
                 email = email,
                 password = password,
                 plan = selectedPlan,
-                price = selectedPrice.toIntOrNull() ?: 0,
+                price = priceInt,
                 payment_method = selectedMethod,
                 gcash_number = if (selectedMethod == "GCASH") gcashNumber else null,
-                gcash_name = if (selectedMethod == "GCASH") gcashName else null,
+                gcash_name = if (selectedMethod == "GCASH" && !gcashName.isNullOrBlank()) gcashName else null,
                 card_number = if (selectedMethod == "CARD") cardNumber else null,
                 card_name = if (selectedMethod == "CARD") cardName else null,
                 card_expiry = if (selectedMethod == "CARD") cardExpiry else null,
                 card_cvv = if (selectedMethod == "CARD") cardCvv else null
             )
+
+            Log.d("REGISTER_DEBUG", Gson().toJson(request))
 
             RetrofitClient.instance.registerUser(request).enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {

@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.text.Editable
+import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.samsantech.fitme.R
@@ -39,6 +40,11 @@ class AccountInfoActivity : AppCompatActivity() {
         val nextButton = findViewById<Button>(R.id.buttonNext)
 
         nextButton.isEnabled = false
+
+        fun isStrongPassword(password: String): Boolean {
+            val pattern = Regex("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%^&*]).{8,}$")
+            return pattern.containsMatchIn(password)
+        }
 
         val watcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -108,13 +114,13 @@ class AccountInfoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, "Invalid email format.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (password.length < 8) {
-                Toast.makeText(this, "Password must be at least 8 characters.", Toast.LENGTH_SHORT).show()
+            if (!isStrongPassword(password)) {
+                Toast.makeText(this, "Password must be at least 8 characters, include uppercase, number, and special character.", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 

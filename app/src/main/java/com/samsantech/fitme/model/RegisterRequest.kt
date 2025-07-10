@@ -13,6 +13,5 @@ data class RegisterRequest(
     val card_number: String? = null,
     val card_name: String? = null,
     val card_expiry: String? = null,
-    val card_cvv: String? = null,
-    val role: String = "member"
+    val card_cvv: String? = null
 )
