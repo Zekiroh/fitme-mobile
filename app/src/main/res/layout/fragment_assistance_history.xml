@@ -32,4 +32,18 @@
             android:showDividers="middle"
             android:dividerPadding="8dp" />
     </ScrollView>
+
+    <!-- Global Typing Indicator -->
+    <TextView
+        android:id="@+id/globalTypingIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coach is typing..."
+        android:textColor="#9CA3AF"
+        android:textStyle="italic"
+        android:textSize="13sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
+
 </LinearLayout>
