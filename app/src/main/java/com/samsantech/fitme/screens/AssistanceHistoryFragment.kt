@@ -25,6 +25,7 @@ import java.util.*
 
 class AssistanceHistoryFragment : Fragment() {
     private lateinit var historyContainer: LinearLayout
+    private lateinit var globalTypingIndicator: TextView
     private var userId: Int = -1
     private var activeMeta: TextView? = null
     private var isTyping: Boolean = false
@@ -43,7 +44,7 @@ class AssistanceHistoryFragment : Fragment() {
     private val typingDotsRunnable = object : Runnable {
         override fun run() {
             dotCount = (dotCount + 1) % 4
-            loadHistory()
+            globalTypingIndicator.text = "Coach is typing" + ".".repeat(dotCount + 1)
             if (isTyping) handler.postDelayed(this, 500)
         }
     }
@@ -54,6 +55,7 @@ class AssistanceHistoryFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_assistance_history, container, false)
         historyContainer = view.findViewById(R.id.historyContainer)
+        globalTypingIndicator = view.findViewById(R.id.globalTypingIndicator)
 
         val sharedPref = requireContext().getSharedPreferences("FitMePrefs", Context.MODE_PRIVATE)
         userId = sharedPref.getInt("user_id", -1)
@@ -84,12 +86,15 @@ class AssistanceHistoryFragment : Fragment() {
                 Log.d("SocketTyping", "isTypingNow: $isTypingNow")
 
                 activity?.runOnUiThread {
-                    isTyping = isTypingNow
-                    if (isTyping) {
+                    if (isTypingNow) {
+                        isTyping = true
+                        globalTypingIndicator.visibility = View.VISIBLE
+                        dotCount = 0
                         handler.post(typingDotsRunnable)
                     } else {
+                        isTyping = false
                         handler.removeCallbacks(typingDotsRunnable)
-                        dotCount = 0
+                        globalTypingIndicator.visibility = View.GONE
                         loadHistory()
                     }
                 }
@@ -127,10 +132,8 @@ class AssistanceHistoryFragment : Fragment() {
                         val currentSnapshot = historyList.joinToString {
                             "${it.id}-${it.message}-${it.replies?.size ?: 0}"
                         }
-                        if (!isTyping && currentSnapshot != lastHistorySnapshot) {
+                        if (currentSnapshot != lastHistorySnapshot) {
                             lastHistorySnapshot = currentSnapshot
-                            populateHistory(historyList)
-                        } else if (isTyping) {
                             populateHistory(historyList)
                         }
                     }
@@ -171,7 +174,6 @@ class AssistanceHistoryFragment : Fragment() {
             val txtCategory = card.findViewById<TextView>(R.id.txtCategory)
             val txtStatus = card.findViewById<TextView>(R.id.txtStatus)
             val txtReplies = card.findViewById<LinearLayout>(R.id.txtReplies)
-            val typingLine = card.findViewById<TextView>(R.id.coachTypingLine)
             val btnReply = card.findViewById<Button>(R.id.btnReply)
             val btnSend = card.findViewById<Button>(R.id.btnSendReply)
             val replyBox = card.findViewById<EditText>(R.id.editReply)
@@ -200,14 +202,6 @@ class AssistanceHistoryFragment : Fragment() {
                         formattedReplyTime, reply.sender == "member"
                     ) { meta -> toggleMeta(meta) }
                 )
-            }
-
-            if (item.status == "Pending" && isTyping) {
-                val dots = ".".repeat(dotCount + 1)
-                typingLine.text = "Coach is typing$dots"
-                typingLine.visibility = View.VISIBLE
-            } else {
-                typingLine.visibility = View.GONE
             }
 
             btnReply.setOnClickListener {
