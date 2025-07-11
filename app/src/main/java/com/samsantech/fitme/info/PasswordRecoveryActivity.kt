@@ -9,6 +9,11 @@ import android.text.SpannableString
 import android.graphics.Color
 import android.text.style.ForegroundColorSpan
 import com.samsantech.fitme.R
+import com.samsantech.fitme.api.RetrofitClient
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PasswordRecoveryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +42,21 @@ class PasswordRecoveryActivity : AppCompatActivity() {
             if (email.isEmpty()) {
                 Toast.makeText(this, "Please enter your email address.", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Recovery link sent to $email", Toast.LENGTH_LONG).show()
-                finish()
+                RetrofitClient.auth.sendResetEmail(email)
+                    .enqueue(object : Callback<ResponseBody> {
+                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                            if (response.isSuccessful) {
+                                Toast.makeText(this@PasswordRecoveryActivity, "Check your email for reset instructions.", Toast.LENGTH_LONG).show()
+                                finish() // go back to login
+                            } else {
+                                Toast.makeText(this@PasswordRecoveryActivity, "Failed to send reset email.", Toast.LENGTH_LONG).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            Toast.makeText(this@PasswordRecoveryActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
+                        }
+                    })
             }
         }
 

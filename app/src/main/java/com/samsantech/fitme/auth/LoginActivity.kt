@@ -79,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Email and password are required.", Toast.LENGTH_SHORT).show()
             } else {
                 val loginRequest = LoginRequest(email, password)
-                RetrofitClient.instance.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
+                RetrofitClient.auth.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                         if (response.isSuccessful) {
                             val user = response.body()?.user

@@ -204,6 +204,11 @@ class AssistanceHistoryFragment : Fragment() {
                 )
             }
 
+            // ✅ NEW: automatically hide reply button if resolved
+            if (item.status == "Resolved") {
+                btnReply.visibility = View.GONE
+            }
+
             btnReply.setOnClickListener {
                 replyBox.visibility = View.VISIBLE
                 btnSend.visibility = View.VISIBLE
@@ -252,6 +257,7 @@ class AssistanceHistoryFragment : Fragment() {
             historyContainer.addView(card)
         }
     }
+
 
     private fun toggleMeta(meta: TextView) {
         if (activeMeta != null && activeMeta != meta) {
