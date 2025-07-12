@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/title_membership"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/membershipdetails"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#E65C2C"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/label_plan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plan"
+            android:textSize="18sp"
+            android:textColor="#E65C2C"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/value_plan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/label_membership_ends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/membershipends"
+            android:textSize="18sp"
+            android:textColor="#E65C2C"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/value_membership_ends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+    </LinearLayout>
+</ScrollView>
