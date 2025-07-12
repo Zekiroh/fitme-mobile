@@ -1,263 +1,103 @@
-<?xml version="1.0" ?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:background="@android:color/white"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="2dp"
+        android:clipToPadding="false">
 
+        <!-- My Profile Header -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/myprofile"
-            android:textStyle="bold"
+            android:text="My Profile"
             android:textSize="20sp"
-            android:textColor="#E65C2C"
-            android:layout_marginTop="16dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gender"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/username"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/email"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/contact"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-
-        </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/myfitnessprofile"
             android:textStyle="bold"
-            android:textColor="#E65C2C"
-            android:textSize="18sp"
-            android:layout_marginTop="16dp"/>
+            android:textColor="#E65100"
+            android:layout_marginBottom="12dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+        <!-- Name -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Name:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvName" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="John Doe"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/fitnesslevel"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
+        <!-- Gender -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Gender:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvGender" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="Male"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
+        <!-- Username -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Username:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvUsername" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="johndoe123"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+        <!-- Email -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Email:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvEmail" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="john@example.com"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/fitnessgoal"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
+        <!-- Contact -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Contact:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvContact" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="+63 900 000 0000"
+            android:textColor="#000000" android:layout_marginBottom="16dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-        </LinearLayout>
+        <!-- My Fitness Profile Header -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="My Fitness Profile" android:textSize="20sp" android:textStyle="bold"
+            android:textColor="#E65100" android:layout_marginBottom="12dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+        <!-- Fitness Level -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Fitness Level:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvFitnessLevel" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="Beginner"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/weight"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
+        <!-- Fitness Goal -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Fitness Goal:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvFitnessGoal" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="Lose Weight"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-        </LinearLayout>
+        <!-- Weight -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Weight:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvWeight" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="70 kg"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+        <!-- Height -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Height:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvHeight" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="175 cm"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/height"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/BMI"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E65C2C"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text=""
-                android:layout_weight="2"/>
-        </LinearLayout>
-
+        <!-- BMI -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="BMI:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tvBMI" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="22.9"
+            android:textColor="#000000" android:layout_marginBottom="12dp"/>
     </LinearLayout>
 </ScrollView>
