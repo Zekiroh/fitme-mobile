@@ -112,7 +112,7 @@ class PathSelectionActivity : AppCompatActivity() {
                 payment_method = "None"
             )
 
-            RetrofitClient.instance.registerUser(registerRequest).enqueue(object : Callback<RegisterResponse> {
+            RetrofitClient.auth.registerUser(registerRequest).enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                     val intent = Intent(this@PathSelectionActivity, FreeSuccessActivity::class.java)
                     intent.putExtra("from", "no_membership")

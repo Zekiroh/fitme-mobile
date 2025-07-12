@@ -242,7 +242,7 @@ class PaymentMethodActivity : AppCompatActivity() {
 
             Log.d("REGISTER_DEBUG", Gson().toJson(request))
 
-            RetrofitClient.instance.registerUser(request).enqueue(object : Callback<RegisterResponse> {
+            RetrofitClient.auth.registerUser(request).enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                     if (response.isSuccessful && response.body()?.success == true) {
                         val intent = when (selectedMethod) {

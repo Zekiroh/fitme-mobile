@@ -20,7 +20,8 @@ object RetrofitClient {
         Log.d("FitMeBaseURL", "Base URL: $BASE_URL")
     }
 
-    val instance: AuthService by lazy {
+    // 🔥 Renamed to `auth` for clarity
+    val auth: AuthService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
