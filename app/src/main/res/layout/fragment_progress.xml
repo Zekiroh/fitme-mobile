@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,7 +19,6 @@
             android:textColor="#FF7F50"
             android:layout_marginBottom="12dp" />
 
-        <!-- Total Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="153dp"
@@ -46,46 +44,97 @@
                 android:orientation="horizontal"
                 android:weightSum="3">
 
-                <!-- Workouts -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💪" android:textSize="24sp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="#000" android:textSize="18sp" android:textStyle="bold" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Workouts" android:textColor="#757575" android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💪"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#000"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Workouts"
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- Kcal -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔥" android:textSize="24sp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="#000" android:textSize="18sp" android:textStyle="bold" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kcal" android:textColor="#757575" android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔥"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#000"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kcal"
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- Minutes -->
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⏱️" android:textSize="24sp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="#000" android:textSize="18sp" android:textStyle="bold" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Minutes" android:textColor="#757575" android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⏱️"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#000"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Minutes"
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
 
-        <!-- History Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="97dp"
@@ -122,21 +171,76 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <!-- Days of the Week -->
-                <TextView android:layout_width="32dp" android:layout_height="32dp" android:layout_marginHorizontal="4dp" android:gravity="center" android:text="S" android:textColor="#000" android:textSize="12sp" />
-                <TextView android:layout_width="32dp" android:layout_height="32dp" android:layout_marginHorizontal="4dp" android:gravity="center" android:text="M" android:textColor="#000" android:textSize="12sp" />
-                <TextView android:layout_width="32dp" android:layout_height="32dp" android:layout_marginHorizontal="4dp" android:gravity="center" android:text="T" android:textColor="#000" android:textSize="12sp" />
-                <TextView android:layout_width="32dp" android:layout_height="32dp" android:layout_marginHorizontal="4dp" android:gravity="center" android:text="W" android:textColor="#000" android:textSize="12sp" />
-                <TextView android:layout_width="32dp" android:layout_height="32dp" android:layout_marginHorizontal="4dp" android:gravity="center" android:text="T" android:textColor="#000" android:textSize="12sp" />
-                <TextView android:layout_width="32dp" android:layout_height="32dp" android:layout_marginHorizontal="4dp" android:gravity="center" android:text="F" android:textColor="#000" android:textSize="12sp" />
-                <TextView android:layout_width="32dp" android:layout_height="32dp" android:layout_marginHorizontal="4dp" android:gravity="center" android:text="S" android:textColor="#000" android:textSize="12sp" />
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:gravity="center"
+                    android:text="S"
+                    android:textColor="#000"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:gravity="center"
+                    android:text="M"
+                    android:textColor="#000"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:gravity="center"
+                    android:text="T"
+                    android:textColor="#000"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:gravity="center"
+                    android:text="W"
+                    android:textColor="#000"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:gravity="center"
+                    android:text="T"
+                    android:textColor="#000"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:gravity="center"
+                    android:text="F"
+                    android:textColor="#000"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:gravity="center"
+                    android:text="S"
+                    android:textColor="#000"
+                    android:textSize="12sp" />
             </LinearLayout>
+
         </LinearLayout>
 
-        <!-- Weight Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -146,12 +250,34 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="4dp" android:text="Weight" android:textColor="#FF7F50" android:textSize="18sp" android:textStyle="bold" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:text="Define your goal and track your transformation!" android:textColor="#757575" android:textSize="13sp" />
-            <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:backgroundTint="#FF7F50" android:paddingHorizontal="24dp" android:text="Set A Goal" android:textColor="#FFF" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="Weight"
+                android:textColor="#FF7F50"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Define your goal and track your transformation!"
+                android:textColor="#757575"
+                android:textSize="13sp" />
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="#FF7F50"
+                android:paddingHorizontal="24dp"
+                android:text="Set A Goal"
+                android:textColor="#FFF" />
         </LinearLayout>
 
-        <!-- BMI Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -160,11 +286,32 @@
             android:padding="16dp"
             android:elevation="2dp">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="BMI" android:textStyle="bold" android:textColor="#FF7F50" android:textSize="18sp" android:layout_marginBottom="4dp" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Take the first step toward a healthier you!" android:textColor="#757575" android:textSize="13sp" android:layout_marginBottom="8dp" />
-            <Button android:text="Get Started" android:textColor="#FFF" android:backgroundTint="#FF7F50" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:paddingHorizontal="24dp" />
-        </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BMI"
+                android:textStyle="bold"
+                android:textColor="#FF7F50"
+                android:textSize="18sp"
+                android:layout_marginBottom="4dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Take the first step toward a healthier you!"
+                android:textColor="#757575"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:text="Get Started"
+                android:textColor="#FFF"
+                android:backgroundTint="#FF7F50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingHorizontal="24dp" />
+        </LinearLayout>
         <!-- Coach Note -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -175,9 +322,23 @@
             android:elevation="2dp"
             android:layout_marginTop="12dp">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Coach’s Note" android:textStyle="bold" android:textColor="#FF7F50" android:textSize="16sp" android:layout_marginBottom="4dp" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="You're doing great! Remember, consistency beats intensity. Let's keep pushing forward!" android:textColor="#333" android:textSize="13sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Coach’s Note"
+                android:textStyle="bold"
+                android:textColor="#FF7F50"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You're doing great! Remember, consistency beats intensity. Let's keep pushing forward!"
+                android:textColor="#333"
+                android:textSize="13sp" />
         </LinearLayout>
+
 
     </LinearLayout>
 </ScrollView>
