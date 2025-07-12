@@ -104,7 +104,7 @@
     <string name="membershipends">Membership Ends: </string>
 
     <!-- fragment_feedback strings-->
-    <string name="feedback">We'd Love Your Feedback!</string>
+    <string name="feedback">We would Love Your Feedback!</string>
     <string name="hello">Hello</string>
     <string name="survey">Take Survey</string>
 
