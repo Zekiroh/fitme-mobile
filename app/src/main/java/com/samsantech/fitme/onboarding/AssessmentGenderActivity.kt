@@ -25,7 +25,6 @@ class AssessmentGenderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment_gender)
 
-        // Initialize views
         optionMale = findViewById(R.id.optionMale)
         optionFemale = findViewById(R.id.optionFemale)
         maleCircle = findViewById(R.id.maleCircle)
@@ -35,7 +34,6 @@ class AssessmentGenderActivity : AppCompatActivity() {
         btnNext = findViewById(R.id.btnNextGender)
         skipText = findViewById(R.id.skipText)
 
-        // Click listeners
         optionMale.setOnClickListener {
             selectedGender = "Male"
             setSelectedGender("male")
@@ -58,11 +56,10 @@ class AssessmentGenderActivity : AppCompatActivity() {
     }
 
     private fun setSelectedGender(selected: String) {
-        // Enable Next button
         btnNext.isEnabled = true
         btnNext.alpha = 1f
 
-        val orange = ContextCompat.getColor(this, R.color.orange_500) // #F97316
+        val orange = ContextCompat.getColor(this, R.color.orange_500)
         val white = ContextCompat.getColor(this, android.R.color.white)
 
         if (selected == "male") {
