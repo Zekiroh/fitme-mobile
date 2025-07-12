@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_assistance -> loadFragment(AssistanceFragment())
                 R.id.nav_progress -> loadFragment(ProgressFragment())
                 R.id.nav_workouts -> loadFragment(WorkoutsFragment())
-                R.id.nav_diet -> loadFragment(DietFragment())
                 R.id.nav_profile -> loadFragment(ProfileFragment())
             }
             true
