@@ -28,6 +28,11 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // ✅ Fetch and display the full name from SharedPreferences
+        val sharedPref = requireContext().getSharedPreferences("FitMePrefs", Context.MODE_PRIVATE)
+        val fullName = sharedPref.getString("full_name", "Guest")
+        binding.name.text = fullName  // assuming your TextView in XML has id = "name"
+
         binding.btnProfile.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.nav_host_fragment, MyProfileFragment())
