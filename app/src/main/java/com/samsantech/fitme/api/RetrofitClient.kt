@@ -4,7 +4,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.samsantech.fitme.api.AuthService
 import com.samsantech.fitme.api.AssistanceService
-import android.util.Log // Added for debugging
+import com.samsantech.fitme.api.Recommendation
+import android.util.Log
 
 object RetrofitClient {
     private const val LOCAL_URL = "http://10.0.2.2:5000/"
@@ -15,12 +16,10 @@ object RetrofitClient {
 
     private val BASE_URL = if (USE_LOCAL) LOCAL_URL else PROD_URL
 
-    // Debug log to confirm which URL is used
     init {
         Log.d("FitMeBaseURL", "Base URL: $BASE_URL")
     }
 
-    // 🔥 Renamed to `auth` for clarity
     val auth: AuthService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -35,5 +34,14 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AssistanceService::class.java)
+    }
+
+    // Recommendation service
+    val recommendation: Recommendation by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://fitmegym.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(Recommendation::class.java)
     }
 }
