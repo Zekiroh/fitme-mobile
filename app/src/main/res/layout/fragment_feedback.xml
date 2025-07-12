@@ -2,17 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
+    android:background="#E9E9E9"
     android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@android:color/white"
+        android:background="@drawable/rounded_card"
         android:padding="16dp"
         android:layout_marginBottom="16dp"
-        android:elevation="2dp"
+        android:elevation="6dp"
         android:clipToPadding="false">
 
         <!-- Header -->
@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="We value your feedback! Please take a short survey to help us improve your experience."
+            android:text="We value your feedback! Please take a short survey to help us assess our system."
             android:textColor="#000000"
             android:textSize="16sp"
             android:layout_marginBottom="20dp"/>
@@ -39,6 +39,7 @@
             android:id="@+id/btnTakeSurvey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_card"
             android:text="Take Survey"
             android:backgroundTint="#E65100"
             android:textColor="#FFFFFF"
