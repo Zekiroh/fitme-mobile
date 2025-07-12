@@ -50,7 +50,10 @@ class ProfileFragment : Fragment() {
         }
 
         binding.btnSettings.setOnClickListener {
-            Toast.makeText(requireContext(), "Go to Settings", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, SettingsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.btnLogout.setOnClickListener {

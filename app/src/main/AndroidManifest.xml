@@ -103,6 +103,9 @@
             android:name=".onboarding.AssessmentCompleteActivity"
             android:label="Assessment Completed"
             android:theme="@style/Theme.FitMe" />
+        <activity android:name=".screens.TermsOfUseActivity"/>
+        <activity android:name=".screens.PrivacyPolicyActivity"/>
+
     </application>
 
 </manifest>

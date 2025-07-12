@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -5,22 +6,21 @@
     android:background="@android:color/white"
     android:padding="24dp">
 
-    <!-- Header -->
+    <!-- Header with Back Button and Title -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp">
 
-        <!-- Touchable container to match Privacy Policy layout -->
         <FrameLayout
             android:id="@+id/backButtonContainer"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_alignParentStart="true"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless">
 
-            <ImageView
+        <ImageView
                 android:id="@+id/buttonBack"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -40,7 +40,7 @@
             android:textColor="@android:color/black" />
     </RelativeLayout>
 
-    <!-- Content -->
+    <!-- Content Area -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
