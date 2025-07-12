@@ -1,5 +1,6 @@
 package com.samsantech.fitme.screens
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.samsantech.fitme.R
 import com.samsantech.fitme.auth.LoginActivity
 import com.samsantech.fitme.databinding.FragmentProfileBinding
-
 
 class ProfileFragment : Fragment() {
 
@@ -28,15 +29,24 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnProfile.setOnClickListener {
-            Toast.makeText(requireContext(), "Go to Profile", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, MyProfileFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.btnMembershipDetails.setOnClickListener {
-            Toast.makeText(requireContext(), "Go to Membership Details", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, MembershipDetailsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.btnFeedbacks.setOnClickListener {
-            Toast.makeText(requireContext(), "Go to Feedbacks", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, FeedbackFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.btnSettings.setOnClickListener {
@@ -49,20 +59,14 @@ class ProfileFragment : Fragment() {
     }
 
     private fun logoutUser() {
-        val prefs = requireContext().getSharedPreferences("MyAppPrefs", android.content.Context.MODE_PRIVATE)
-        prefs.edit().clear().commit()  // ensures data is cleared immediately
-
+        val prefs = requireContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        prefs.edit().clear().commit()
         Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show()
-
-        val intent = Intent(requireContext(), com.samsantech.fitme.auth.LoginActivity::class.java)
+        val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-
         requireActivity().finishAffinity()
     }
-
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

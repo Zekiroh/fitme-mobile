@@ -26,6 +26,11 @@ class LoginActivity : AppCompatActivity() {
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 Toast.makeText(this, "Welcome, $email", Toast.LENGTH_SHORT).show()
 
+                // ✅ SAVE THE USER NAME TO SHARED PREFERENCES
+                val prefs = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                prefs.edit().putString("userName", email).apply() // you can later change `email` to actual name
+
+                // Go to next screen
                 val intent = Intent(this, AssessmentGenderActivity::class.java)
                 startActivity(intent)
             } else {

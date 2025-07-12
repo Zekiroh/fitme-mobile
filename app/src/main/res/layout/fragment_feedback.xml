@@ -2,49 +2,47 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#FAFAFA">
+    android:background="@color/gray"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="2dp"
+        android:clipToPadding="false">
 
-        <!-- Title -->
+        <!-- Header -->
         <TextView
-            android:id="@+id/feedback_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/feedback"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#E65C2C"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Message -->
-
-        <!-- Survey Link -->
-        <TextView
-            android:id="@+id/feedback_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:text="@string/hello"
-            android:textColor="#333333"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/survey_link"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/survey"
-            android:textSize="24sp"
-            android:textColor="#1E88E5"
+            android:text="Feedback"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:autoLink="web"
-            android:layout_marginBottom="16dp"
-            android:padding="8dp"
-            android:background="?android:attr/selectableItemBackground"/>
+            android:textColor="#E65100"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Description -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="We value your feedback! Please take a short survey to help us improve your experience."
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Take Survey Button -->
+        <Button
+            android:id="@+id/btnTakeSurvey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Take Survey"
+            android:backgroundTint="#E65100"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"/>
 
     </LinearLayout>
 </ScrollView>
