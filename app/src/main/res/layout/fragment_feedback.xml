@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FAFAFA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/feedback_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/feedback"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#E65C2C"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Message -->
+
+        <!-- Survey Link -->
+        <TextView
+            android:id="@+id/feedback_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="@string/hello"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/survey_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/survey"
+            android:textSize="24sp"
+            android:textColor="#1E88E5"
+            android:textStyle="bold"
+            android:autoLink="web"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackground"/>
+
+    </LinearLayout>
+</ScrollView>
