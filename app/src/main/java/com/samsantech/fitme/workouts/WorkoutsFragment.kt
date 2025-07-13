@@ -31,7 +31,11 @@ class WorkoutsFragment : Fragment() {
         setupTabs()
 
         btnStart.setOnClickListener {
-            Toast.makeText(requireContext(), "Workout Started!", Toast.LENGTH_SHORT).show()
+            val fragment = ActiveWorkoutFragment()
+            childFragmentManager.beginTransaction()
+                .replace(R.id.tabContentContainer, fragment)
+                .addToBackStack(null)
+                .commit()
         }
 
         return view

@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -78,18 +79,30 @@ class WorkoutGroupDetailFragment : Fragment() {
             }
 
             exerciseLayout.addView(exerciseName)
-
-            exerciseLayout.setOnClickListener {
-                val fragment = ExerciseDetailFragment.newInstance(exercise)
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.tabContentContainer, fragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
-
             layout.addView(exerciseLayout)
         }
 
+        val btnStart = Button(requireContext()).apply {
+            text = "Start Workout"
+            setBackgroundColor(Color.parseColor("#FF7F50"))
+            setTextColor(Color.WHITE)
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(0, 32, 0, 0)
+            layoutParams = params
+        }
+
+        btnStart.setOnClickListener {
+            val fragment = ActiveWorkoutFragment.newInstance(groupName ?: "Workout", exercises ?: arrayListOf())
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.tabContentContainer, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
+        layout.addView(btnStart)
         scrollView.addView(layout)
         return scrollView
     }
