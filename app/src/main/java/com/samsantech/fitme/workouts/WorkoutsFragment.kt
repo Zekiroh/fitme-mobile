@@ -42,22 +42,22 @@ class WorkoutsFragment : Fragment() {
         tabLayout.addTab(tabLayout.newTab().setText("PLAN"))
         tabLayout.addTab(tabLayout.newTab().setText("WORKOUTS"))
 
-        loadFragment(CustomWorkoutFragment())
+        loadFragment(CustomTab())
         customTabContainer.visibility = View.VISIBLE
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.text) {
                     "CUSTOM" -> {
-                        loadFragment(CustomWorkoutFragment())
+                        loadFragment(CustomTab())
                         customTabContainer.visibility = View.VISIBLE
                     }
                     "PLAN" -> {
-                        loadFragment(PlanFragment())
+                        loadFragment(PlanTab())
                         customTabContainer.visibility = View.GONE
                     }
                     "WORKOUTS" -> {
-                        loadFragment(ListOfWorkoutsFragment())
+                        loadFragment(WorkoutsTab())
                         customTabContainer.visibility = View.GONE
                     }
                 }
