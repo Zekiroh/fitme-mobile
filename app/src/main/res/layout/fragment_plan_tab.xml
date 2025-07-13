@@ -2,4 +2,4 @@
     android:id="@+id/planScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1A1A"/>
+    android:background="@android:color/white"/>

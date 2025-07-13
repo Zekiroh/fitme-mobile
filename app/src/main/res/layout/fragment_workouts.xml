@@ -6,7 +6,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1A1A"
+    android:background="@android:color/white"
     tools:context=".workouts.WorkoutsFragment">
 
     <com.google.android.material.tabs.TabLayout
@@ -14,17 +14,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:background="#1A1A1A"
+        android:background="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:tabGravity="fill"
         app:tabIndicatorColor="#FF7F50"
         app:tabIndicatorHeight="3dp"
         app:tabMode="fixed"
         app:tabRippleColor="@android:color/transparent"
         app:tabSelectedTextColor="#FF7F50"
-        app:tabTextColor="#808080"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:tabTextColor="#808080" />
 
     <LinearLayout
         android:id="@+id/customTabContainer"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Build your Own\nWorkout Plan"
-            android:textColor="@android:color/white"
+            android:textColor="#FF7F50"
             android:textSize="22sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Choose exercises and set your pace"
-            android:textColor="#CCCCCC"
+            android:textColor="#555555"
             android:textSize="16sp"
             android:gravity="center"
             android:layout_marginTop="8dp"/>

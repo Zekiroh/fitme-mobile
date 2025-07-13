@@ -56,15 +56,30 @@ class WorkoutsTab : Fragment() {
             }
             groupLayout.addView(title)
 
-            exercises.forEach { exercise ->
+            exercises.take(3).forEach { exercise ->
                 val exerciseName = TextView(requireContext()).apply {
-                    text = "$exercise\n4 Sets x 8 Reps"
+                    text = "$exercise  4 x 8"
                     textSize = 14f
                     setTextColor(Color.DKGRAY)
                 }
                 groupLayout.addView(exerciseName)
             }
 
+            val viewAll = TextView(requireContext()).apply {
+                text = "View All"
+                textSize = 14f
+                setTextColor(Color.parseColor("#FF7F50"))
+                gravity = Gravity.END
+                setOnClickListener {
+                    val fragment = WorkoutGroupDetailFragment.newInstance(groupName, ArrayList(exercises))
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.tabContentContainer, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
+            }
+
+            groupLayout.addView(viewAll)
             layout.addView(groupLayout)
         }
 
