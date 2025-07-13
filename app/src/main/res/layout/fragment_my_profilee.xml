@@ -53,13 +53,6 @@
             android:background="@android:drawable/edit_text" android:padding="10dp" android:text="john@example.com"
             android:textColor="#000000" android:layout_marginBottom="12dp"/>
 
-        <!-- Contact -->
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Contact:" android:textColor="#E65100" android:layout_marginBottom="4dp"/>
-        <TextView android:id="@+id/tvContact" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:background="@android:drawable/edit_text" android:padding="10dp" android:text="+63 900 000 0000"
-            android:textColor="#000000" android:layout_marginBottom="16dp"/>
-
         <!-- My Fitness Profile Header -->
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="My Fitness Profile" android:textSize="20sp" android:textStyle="bold"

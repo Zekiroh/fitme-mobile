@@ -13,7 +13,6 @@ data class UserProfile(
     val gender: String,
     val username: String,
     val email: String,
-    val contact: String,
     val fitnessLevel: String,
     val fitnessGoal: String,
     val weight: String,
@@ -45,7 +44,6 @@ class MyProfileFragment : Fragment() {
         tvGender = view.findViewById(R.id.tvGender)
         tvUsername = view.findViewById(R.id.tvUsername)
         tvEmail = view.findViewById(R.id.tvEmail)
-        tvContact = view.findViewById(R.id.tvContact)
         tvFitnessLevel = view.findViewById(R.id.tvFitnessLevel)
         tvFitnessGoal = view.findViewById(R.id.tvFitnessGoal)
         tvWeight = view.findViewById(R.id.tvWeight)
@@ -64,7 +62,6 @@ class MyProfileFragment : Fragment() {
             gender = "Male",
             username = "johndoe123",
             email = "john@example.com",
-            contact = "+63 900 000 0000",
             fitnessLevel = "Beginner",
             fitnessGoal = "Lose Weight",
             weight = "70 kg",
@@ -77,7 +74,6 @@ class MyProfileFragment : Fragment() {
         tvGender.text = fakeProfile.gender
         tvUsername.text = fakeProfile.username
         tvEmail.text = fakeProfile.email
-        tvContact.text = fakeProfile.contact
         tvFitnessLevel.text = fakeProfile.fitnessLevel
         tvFitnessGoal.text = fakeProfile.fitnessGoal
         tvWeight.text = fakeProfile.weight

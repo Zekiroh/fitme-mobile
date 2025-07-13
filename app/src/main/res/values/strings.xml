@@ -83,7 +83,6 @@
     ]]>
     </string>
 
-
     <!-- fragment_my_profile strings-->
     <string name="myprofile">My Profile</string>
     <string name="name">Name: </string>
@@ -104,11 +103,11 @@
     <string name="membershipends">Membership Ends: </string>
 
     <!-- fragment_feedback strings-->
-    <string name="feedback">We would Love Your Feedback!</string>
+    <string name="feedback">We\'d Love Your Feedback!</string>
     <string name="hello">Hello</string>
     <string name="survey">Take Survey</string>
 
-    <!-- fragment_settings strings-->
+    <!-- fragment_settings-->
     <string name="settings">Settings</string>
     <string name="termsofuse">Terms of Use</string>
     <string name="privacypolicy">Privacy Policy</string>
