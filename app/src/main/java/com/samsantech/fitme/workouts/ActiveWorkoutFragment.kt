@@ -305,6 +305,19 @@ class ActiveWorkoutFragment : Fragment() {
         }
 
         btnFinish.setOnClickListener {
+            // Save workout data
+            val sharedPrefs = requireActivity().getSharedPreferences("FitMePrefs", android.content.Context.MODE_PRIVATE)
+            val editor = sharedPrefs.edit()
+
+            val currentWorkouts = sharedPrefs.getInt("workouts_count", 0) + 1
+            editor.putInt("workouts_count", currentWorkouts)
+
+            val durationMinutes = workoutSeconds / 60
+            val currentMinutes = sharedPrefs.getInt("total_minutes", 0) + durationMinutes
+            editor.putInt("total_minutes", currentMinutes)
+
+            editor.apply()
+
             Toast.makeText(requireContext(), "Workout Finished!", Toast.LENGTH_SHORT).show()
             handler.removeCallbacks(workoutTimerRunnable)
             requireActivity().supportFragmentManager.popBackStack()

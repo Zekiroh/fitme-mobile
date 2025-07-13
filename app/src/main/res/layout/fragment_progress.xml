@@ -58,6 +58,7 @@
                         android:textSize="24sp" />
 
                     <TextView
+                        android:id="@+id/textWorkouts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
@@ -102,7 +103,6 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -117,6 +117,7 @@
                         android:textSize="24sp" />
 
                     <TextView
+                        android:id="@+id/textMinutes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
