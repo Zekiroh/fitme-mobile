@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.samsantech.fitme.R
 import com.samsantech.fitme.screens.*
+import com.samsantech.fitme.workouts.WorkoutsFragment
 
 class MainActivity : AppCompatActivity() {
 
