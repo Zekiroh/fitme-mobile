@@ -8,11 +8,12 @@ import com.samsantech.fitme.api.Recommendation
 import android.util.Log
 
 object RetrofitClient {
-    private const val LOCAL_URL = "http://10.0.2.2:5000/"
+//    private const val LOCAL_URL = "http://10.0.2.2:5000/"
+    private const val LOCAL_URL = "https://iavnscdgtc.a.pinggy.link/api/"
     private const val PROD_URL = "https://fitmegym.com/api/"
 
     // Change this value to switch environment
-    private const val USE_LOCAL = false
+    private const val USE_LOCAL = true
 
     private val BASE_URL = if (USE_LOCAL) LOCAL_URL else PROD_URL
 

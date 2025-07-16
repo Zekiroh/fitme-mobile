@@ -24,13 +24,21 @@ class AssessmentWeightActivity : AppCompatActivity() {
     private var selectedUnit = "kg"
     private val units = listOf("kg", "lbs")
     private var isUpdatingAdapter = false
+    private var selectedGender = ""
+    private var selectedGoal = ""
+
+    private var frequency = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assessment_weight)
+        selectedGender = intent.getStringExtra("gender") ?: ""
+        selectedGoal = intent.getStringExtra("goal") ?: ""
+        frequency = intent.getStringExtra("frequency") ?: ""
 
         weightRecycler = findViewById(R.id.weightRecycler)
         unitRecycler = findViewById(R.id.unitRecycler)
+
 
         setupWeightRecycler(selectedUnit, selectedWeight.toString())
         initUnitPicker()
@@ -39,6 +47,8 @@ class AssessmentWeightActivity : AppCompatActivity() {
             val intent = Intent(this, AssessmentHeightActivity::class.java)
             intent.putExtra("weight", selectedWeight)
             intent.putExtra("unit", selectedUnit)
+            intent.putExtra("gender", selectedGender)
+            intent.putExtra("frequency", frequency)
             startActivity(intent)
         }
 

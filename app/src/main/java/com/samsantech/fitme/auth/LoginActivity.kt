@@ -12,16 +12,19 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import com.samsantech.fitme.R
 import com.samsantech.fitme.api.RetrofitClient
 import com.samsantech.fitme.model.LoginRequest
 import com.samsantech.fitme.model.LoginResponse
 import com.samsantech.fitme.onboarding.AssessmentGenderActivity
 import com.samsantech.fitme.info.PasswordRecoveryActivity
+import com.samsantech.fitme.main.MainActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import org.json.JSONObject
+import androidx.core.content.edit
 
 class LoginActivity : AppCompatActivity() {
     private var isPasswordVisible = false
@@ -74,13 +77,14 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
-
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Email and password are required.", Toast.LENGTH_SHORT).show()
             } else {
                 val loginRequest = LoginRequest(email, password)
+
                 RetrofitClient.auth.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                        println(response.toString())
                         if (response.isSuccessful) {
                             val user = response.body()?.user
 
@@ -89,14 +93,24 @@ class LoginActivity : AppCompatActivity() {
                                 val sharedPref = getSharedPreferences("FitMePrefs", Context.MODE_PRIVATE)
                                 sharedPref.edit().apply {
                                     putInt("user_id", user.id)
-                                    putString("full_name", user.full_name)
+                                    putString("full_name", user.fullName)
+                                    apply()
+                                }
+                                val sharedPrefUsersInfo = getSharedPreferences("usersInfo", Context.MODE_PRIVATE)
+                                sharedPrefUsersInfo.edit().apply {
+                                    val gson = Gson()
+                                    val userJson = gson.toJson(user)
+                                    putString("user_data", userJson)
                                     apply()
                                 }
 
-                                Toast.makeText(this@LoginActivity, "Welcome ${user.full_name}", Toast.LENGTH_SHORT).show()
-
+                                Toast.makeText(this@LoginActivity, "Welcome ${user.fullName}", Toast.LENGTH_SHORT).show()
+                                if(!user.frequency.isNullOrEmpty()) {
+                                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                                } else {
+                                    startActivity(Intent(this@LoginActivity, AssessmentGenderActivity::class.java))
+                                }
                                 // Proceed to Assessment or Dashboard
-                                startActivity(Intent(this@LoginActivity, AssessmentGenderActivity::class.java))
                                 finish()
                             }
                         } else {

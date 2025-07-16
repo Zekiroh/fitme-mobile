@@ -1,12 +1,15 @@
 package com.samsantech.fitme.screens
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.gson.Gson
 import com.samsantech.fitme.R
+import com.samsantech.fitme.model.User
 
 data class UserProfile(
     val name: String,
@@ -57,27 +60,33 @@ class MyProfileFragment : Fragment() {
 
     private fun loadUserProfile() {
         // TODO: Replace this with your API or database fetch, brylle ikaw na dito need ifetch yung data sa db papunta dito para mag work yung actual credentials ng user
-        val fakeProfile = UserProfile(
-            name = "John Doe",
-            gender = "Male",
-            username = "johndoe123",
-            email = "john@example.com",
-            fitnessLevel = "Beginner",
-            fitnessGoal = "Lose Weight",
-            weight = "70 kg",
-            height = "175 cm",
-            bmi = "22.9"
-        )
+        context?.let { ctx ->
+            val sharedPref = ctx.getSharedPreferences("usersInfo", Context.MODE_PRIVATE)
+            val userJson = sharedPref.getString("user_data", null)
+            val user = Gson().fromJson(userJson, User::class.java)
+            // TODO: Replace fakeProfile with actual deserialization if needed
+            val fakeProfile = UserProfile(
+                name = user.fullName,
+                gender = user.gender,
+                username = user.username,
+                email = user.email,
+                fitnessLevel = user.frequency.toString(),
+                fitnessGoal = "N/A",
+                weight = "${user.weight} kg",
+                height = "${user.height} cm",
+                bmi = "N/A"
+            )
 
-        // Populate text boxes
-        tvName.text = fakeProfile.name
-        tvGender.text = fakeProfile.gender
-        tvUsername.text = fakeProfile.username
-        tvEmail.text = fakeProfile.email
-        tvFitnessLevel.text = fakeProfile.fitnessLevel
-        tvFitnessGoal.text = fakeProfile.fitnessGoal
-        tvWeight.text = fakeProfile.weight
-        tvHeight.text = fakeProfile.height
-        tvBMI.text = fakeProfile.bmi
+            // Populate text boxes
+            tvName.text = fakeProfile.name
+            tvGender.text = fakeProfile.gender
+            tvUsername.text = fakeProfile.username
+            tvEmail.text = fakeProfile.email
+            tvFitnessLevel.text = fakeProfile.fitnessLevel
+            tvFitnessGoal.text = fakeProfile.fitnessGoal
+            tvWeight.text = fakeProfile.weight
+            tvHeight.text = fakeProfile.height
+            tvBMI.text = fakeProfile.bmi
+        }
     }
 }

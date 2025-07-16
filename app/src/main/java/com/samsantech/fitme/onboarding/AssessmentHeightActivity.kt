@@ -1,5 +1,6 @@
 package com.samsantech.fitme.onboarding
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -7,14 +8,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.samsantech.fitme.R
+import com.samsantech.fitme.api.RetrofitClient
 import com.samsantech.fitme.components.BMIInfoCardView
 import com.samsantech.fitme.main.MainActivity
+import com.samsantech.fitme.model.RegUpdateParam
+
+import com.samsantech.fitme.model.ResponseSuccess
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AssessmentHeightActivity : AppCompatActivity() {
 
@@ -26,6 +37,10 @@ class AssessmentHeightActivity : AppCompatActivity() {
     private var selectedUnit = "cm"
     private val units = listOf("cm", "ft • in")
     private var isUpdatingAdapter = false
+    private var frequency = ""
+    private var selectedGender = ""
+
+    private var selectedWeight = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,15 +50,62 @@ class AssessmentHeightActivity : AppCompatActivity() {
         unitRecycler = findViewById(R.id.unitRecycler)
         bmiCard = findViewById(R.id.bmiCard)
 
+        selectedWeight = intent.getIntExtra("weight", 0)
+        frequency = intent.getStringExtra("frequency") ?: ""
+        selectedGender = intent.getStringExtra("gender") ?: ""
+
         setupHeightRecycler(selectedUnit, selectedHeight.toString())
         initUnitPicker()
         updateBMICard()
 
         findViewById<View>(R.id.btnNextHeight).setOnClickListener {
-            val intent = Intent(this, AssessmentCompleteActivity::class.java)
-            intent.putExtra("height", selectedHeight)
-            intent.putExtra("unit", selectedUnit)
-            startActivity(intent)
+            val sharedPref = getSharedPreferences("FitMePrefs", Context.MODE_PRIVATE)
+            val userId = sharedPref.getInt("user_id", 0)
+
+            if (userId == 0) {
+                Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            lifecycleScope.launch {
+                try {
+                    RetrofitClient.auth.updateFitReg(
+                        userId = userId,
+                        body = RegUpdateParam(
+                            fitnessPlan = "Beginner",
+                            height = selectedHeight.toString(),
+                            gender = selectedGender,
+                            weight = selectedWeight,
+                            frequency = frequency
+                        )
+                    ).enqueue(object : Callback<ResponseSuccess> {
+                        override fun onResponse(call: Call<ResponseSuccess>, response: Response<ResponseSuccess>) {
+                            if (response.isSuccessful && response.body() != null) {
+                                Toast.makeText(this@AssessmentHeightActivity, "Updated!", Toast.LENGTH_SHORT).show()
+
+                                val intent = Intent(this@AssessmentHeightActivity, AssessmentCompleteActivity::class.java)
+                                intent.putExtra("height", "170")
+                                intent.putExtra("unit", "cm")
+                                startActivity(intent)
+                            } else {
+                                Toast.makeText(this@AssessmentHeightActivity, "Failed: ${response.code()}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ResponseSuccess>, t: Throwable) {
+                            Toast.makeText(this@AssessmentHeightActivity, "Error: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+
+                } catch (e: Exception) {
+                    Toast.makeText(this@AssessmentHeightActivity, "Error: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                }
+            }
+//            Toast.makeText(this, "hello world", Toast.LENGTH_SHORT).show()
+//            val intent = Intent(this, AssessmentCompleteActivity::class.java)
+//            intent.putExtra("height", selectedHeight)
+//            intent.putExtra("unit", selectedUnit)
+//            startActivity(intent)
         }
 
         findViewById<View>(R.id.skipText).setOnClickListener {
