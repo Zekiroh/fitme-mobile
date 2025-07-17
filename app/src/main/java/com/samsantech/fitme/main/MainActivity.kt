@@ -17,12 +17,12 @@ class MainActivity : AppCompatActivity() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
 
         // Default fragment
-        loadFragment(AssistanceFragment())
+        loadFragment(ProgressFragment())
 
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_assistance -> loadFragment(AssistanceFragment())
                 R.id.nav_progress -> loadFragment(ProgressFragment())
+                R.id.nav_assistance -> loadFragment(AssistanceFragment())
                 R.id.nav_workouts -> loadFragment(WorkoutsFragment())
                 R.id.nav_profile -> loadFragment(ProfileFragment())
             }

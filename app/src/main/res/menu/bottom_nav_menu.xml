@@ -1,12 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_assistance"
-        android:icon="@drawable/ic_assistance"
-        android:title="Assistance" />
-    <item
         android:id="@+id/nav_progress"
         android:icon="@drawable/ic_progress"
         android:title="Progress" />
+
+    <item
+        android:id="@+id/nav_assistance"
+        android:icon="@drawable/ic_assistance"
+        android:title="Assistance" />
+
     <item
         android:id="@+id/nav_workouts"
         android:icon="@drawable/ic_workouts"

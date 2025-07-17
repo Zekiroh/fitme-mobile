@@ -6,6 +6,7 @@ import com.samsantech.fitme.api.AuthService
 import com.samsantech.fitme.api.AssistanceService
 import com.samsantech.fitme.api.Recommendation
 import android.util.Log
+import retrofit2.create
 
 object RetrofitClient {
 //    private const val LOCAL_URL = "http://10.0.2.2:5000/"
@@ -29,6 +30,13 @@ object RetrofitClient {
             .create(AuthService::class.java)
     }
 
+    val members: MemberService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MemberService::class.java)
+    }
     val assistance: AssistanceService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
