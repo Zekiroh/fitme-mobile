@@ -1,5 +1,6 @@
 package com.samsantech.fitme.workouts
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -7,10 +8,20 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.samsantech.fitme.R
+import androidx.core.graphics.toColorInt
+import com.samsantech.fitme.api.RetrofitClient
+import com.samsantech.fitme.components.SharedPrefHelper
+import com.samsantech.fitme.model.AddWorkoutResponse
+import com.samsantech.fitme.model.WorkoutInput
+import com.samsantech.fitme.model.WorkoutResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ActiveWorkoutFragment : Fragment() {
 
@@ -43,6 +54,7 @@ class ActiveWorkoutFragment : Fragment() {
         }
     }
 
+    @SuppressLint("UseKtx")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,7 +74,7 @@ class ActiveWorkoutFragment : Fragment() {
         layout.addView(title)
 
         val workoutTimerText = TextView(requireContext()).apply {
-            text = "Workout Duration: 00:00"
+            "Workout Duration: 00:00".also { text = it }
             textSize = 18f
             setTextColor(Color.DKGRAY)
             gravity = Gravity.CENTER
@@ -76,11 +88,13 @@ class ActiveWorkoutFragment : Fragment() {
         layout.addView(workoutTimerText)
 
         workoutTimerRunnable = object : Runnable {
+            @SuppressLint("DefaultLocale")
             override fun run() {
                 workoutSeconds++
                 val minutes = workoutSeconds / 60
                 val seconds = workoutSeconds % 60
-                workoutTimerText.text = String.format("Workout Duration: %02d:%02d", minutes, seconds)
+                String.format("Workout Duration: %02d:%02d", minutes, seconds)
+                    .also { workoutTimerText.text = it }
                 handler.postDelayed(this, 1000)
             }
         }
@@ -88,15 +102,15 @@ class ActiveWorkoutFragment : Fragment() {
 
         val enabledDrawable = GradientDrawable().apply {
             cornerRadius = 32f
-            setColor(Color.parseColor("#FF7F50"))
+            setColor("#FF7F50".toColorInt())
         }
         val disabledDrawable = GradientDrawable().apply {
             cornerRadius = 32f
-            setColor(Color.parseColor("#CCCCCC"))
+            setColor("#CCCCCC".toColorInt())
         }
 
         val btnFinish = Button(requireContext()).apply {
-            text = "Finish Workout"
+            "Finish Workout".also { text = it }
             setTextColor(Color.WHITE)
             background = disabledDrawable
             isEnabled = false
@@ -187,6 +201,8 @@ class ActiveWorkoutFragment : Fragment() {
 
                 val weightInput = EditText(requireContext()).apply {
                     hint = "Weight"
+                    setText("60")
+
                     inputType = android.text.InputType.TYPE_CLASS_NUMBER
                     setBackgroundColor(Color.parseColor("#F5F5F5"))
                     setPadding(16, 8, 16, 8)
@@ -197,6 +213,7 @@ class ActiveWorkoutFragment : Fragment() {
 
                 val repsInput = EditText(requireContext()).apply {
                     hint = "Reps"
+                    setText("10")
                     inputType = android.text.InputType.TYPE_CLASS_NUMBER
                     setBackgroundColor(Color.parseColor("#F5F5F5"))
                     setPadding(16, 8, 16, 8)
@@ -227,6 +244,31 @@ class ActiveWorkoutFragment : Fragment() {
                                 }
                                 btnFinish.isEnabled = allDone
                                 btnFinish.background = if (allDone) enabledDrawable else disabledDrawable
+                                val user = SharedPrefHelper.getLoggedInUser(requireContext())
+                                user?.let {
+                                    RetrofitClient.members.addWorkout(it.id, WorkoutInput(
+                                        weight = weightInput.text.toString(),
+                                        reps = repsInput.text.toString(),
+                                        description = exerciseTitle.text.toString()
+                                    )).enqueue(object: Callback<AddWorkoutResponse> {
+                                        override fun onResponse(
+                                            call: Call<AddWorkoutResponse?>,
+                                            response: Response<AddWorkoutResponse?>
+                                        ) {
+                                            val workouts = response.body()
+                                            Log.e("active workout ${workouts?.message}", "Error: ${response.code()}")
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<AddWorkoutResponse?>,
+                                            t: Throwable
+                                        ) {
+                                            Log.e("add to workout", "Failed: ${t.localizedMessage}")
+                                        }
+
+                                    })
+                                }
+
 
                                 if (doneCount[0] == totalSets) {
                                     Toast.makeText(requireContext(), "$exercise completed!", Toast.LENGTH_SHORT).show()
@@ -246,7 +288,7 @@ class ActiveWorkoutFragment : Fragment() {
             contentLayout.addView(setsLayout)
 
             val timerText = TextView(requireContext()).apply {
-                text = "Rest: Not started"
+                "Rest: Not started".also { text = it }
                 textSize = 16f
                 setTextColor(Color.DKGRAY)
                 gravity = Gravity.CENTER_HORIZONTAL
@@ -259,7 +301,7 @@ class ActiveWorkoutFragment : Fragment() {
             }
 
             val btnStartRest = Button(requireContext()).apply {
-                text = "Start Rest (30s)"
+                "Start Rest (30s)".also { text = it }
                 setBackgroundColor(Color.parseColor("#FF7F50"))
                 setTextColor(Color.WHITE)
                 val params = LinearLayout.LayoutParams(
@@ -275,11 +317,11 @@ class ActiveWorkoutFragment : Fragment() {
                 object : CountDownTimer(30000, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
                         val secondsLeft = millisUntilFinished / 1000
-                        timerText.text = "Rest: $secondsLeft sec remaining"
+                        "Rest: $secondsLeft sec remaining".also { timerText.text = it }
                     }
 
                     override fun onFinish() {
-                        timerText.text = "Rest complete!"
+                        "Rest complete!".also { timerText.text = it }
                         btnStartRest.isEnabled = true
                         timerText.setTextColor(Color.parseColor("#FF7F50"))
                     }

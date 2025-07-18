@@ -12,6 +12,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.samsantech.fitme.R
+import androidx.core.graphics.toColorInt
 
 class WorkoutGroupDetailFragment : Fragment() {
 
@@ -51,7 +52,7 @@ class WorkoutGroupDetailFragment : Fragment() {
         }
 
         val title = TextView(requireContext()).apply {
-            text = "$groupName • ${exercises?.size ?: 0} Exercises"
+            "$groupName • ${exercises?.size ?: 0} Exercises".also { text = it }
             textSize = 20f
             setTextColor(Color.BLACK)
             gravity = Gravity.CENTER
@@ -73,7 +74,7 @@ class WorkoutGroupDetailFragment : Fragment() {
             }
 
             val exerciseName = TextView(requireContext()).apply {
-                text = "$exercise\n4 Sets x 8 Reps"
+                "$exercise\n4 Sets x 8 Reps".also { text = it }
                 textSize = 16f
                 setTextColor(Color.DKGRAY)
             }
@@ -83,8 +84,8 @@ class WorkoutGroupDetailFragment : Fragment() {
         }
 
         val btnStart = Button(requireContext()).apply {
-            text = "Start Workout"
-            setBackgroundColor(Color.parseColor("#FF7F50"))
+            "Start Workout".also { text = it }
+            setBackgroundColor("#FF7F50".toColorInt())
             setTextColor(Color.WHITE)
             val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,

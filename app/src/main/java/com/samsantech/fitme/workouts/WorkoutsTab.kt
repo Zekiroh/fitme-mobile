@@ -11,6 +11,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.samsantech.fitme.R
+import androidx.core.graphics.toColorInt
 
 class WorkoutsTab : Fragment() {
 
@@ -34,7 +35,8 @@ class WorkoutsTab : Fragment() {
             setPadding(32, 32, 32, 32)
         }
 
-        workoutGroups.forEach { (groupName, exercises) ->
+        workoutGroups.forEach { groupName, exercises ->
+
             val groupLayout = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.VERTICAL
                 setBackgroundColor(Color.WHITE)
@@ -49,16 +51,16 @@ class WorkoutsTab : Fragment() {
             }
 
             val title = TextView(requireContext()).apply {
-                text = "$groupName • ${exercises.size} Exercises"
+                "$groupName • ${exercises.size} Exercises".also { text = it }
                 textSize = 18f
                 setTextColor(Color.BLACK)
                 gravity = Gravity.CENTER
             }
             groupLayout.addView(title)
 
-            exercises.take(3).forEach { exercise ->
+            exercises.take(4).forEach { exercise ->
                 val exerciseName = TextView(requireContext()).apply {
-                    text = "$exercise  4 x 8"
+                    "$exercise  4 x 8".also { text = it }
                     textSize = 14f
                     setTextColor(Color.DKGRAY)
                 }
@@ -66,9 +68,9 @@ class WorkoutsTab : Fragment() {
             }
 
             val viewAll = TextView(requireContext()).apply {
-                text = "View All"
+                "View All".also { text = it }
                 textSize = 14f
-                setTextColor(Color.parseColor("#FF7F50"))
+                setTextColor("#FF7F50".toColorInt())
                 gravity = Gravity.END
                 setOnClickListener {
                     val fragment = WorkoutGroupDetailFragment.newInstance(groupName, ArrayList(exercises))

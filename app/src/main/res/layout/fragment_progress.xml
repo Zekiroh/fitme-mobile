@@ -149,7 +149,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="97dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:background="#EAEAEA"
             android:elevation="2dp"
@@ -183,7 +183,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -250,6 +249,20 @@
                     android:textColor="#000"
                     android:textSize="12sp" />
             </LinearLayout>
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/recordHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -279,8 +292,17 @@
                 android:textColor="#757575"
                 android:textSize="13sp" />
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/weightView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="weight"
+                android:gravity="center"/>
 
             <Button
+                android:id="@+id/weightButton"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -314,8 +336,17 @@
                 android:textColor="#757575"
                 android:textSize="13sp"
                 android:layout_marginBottom="8dp" />
-
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/bmiText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BMI"
+                android:gravity="center"
+                />
             <Button
+                android:id="@+id/bmiButton"
+                android:visibility="gone"
                 android:text="Get Started"
                 android:textColor="#FFF"
                 android:backgroundTint="#FF7F50"
@@ -323,6 +354,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:paddingHorizontal="24dp" />
+
         </LinearLayout>
         <!-- Coach Note -->
         <LinearLayout
@@ -344,6 +376,7 @@
                 android:layout_marginBottom="4dp" />
 
             <TextView
+                android:id="@+id/coachNote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="You're doing great! Remember, consistency beats intensity. Let's keep pushing forward!"
