@@ -2,6 +2,7 @@ package com.samsantech.fitme.screens
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -27,7 +28,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.core.graphics.toColorInt
+import com.samsantech.fitme.auth.AccountInfoActivity
 import com.samsantech.fitme.model.WeeklyWorkoutResponse
+import com.samsantech.fitme.onboarding.AssessmentGenderActivity
+import com.samsantech.fitme.workouts.ActivityGetRecordsWorkout
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -49,6 +53,7 @@ class ProgressFragment : Fragment() {
         val textWorkouts = view.findViewById<TextView>(R.id.textWorkouts)
         val textMinutes = view.findViewById<TextView>(R.id.textMinutes)
         val welcomeIdText = view.findViewById<TextView>(R.id.welcomeUser)
+        val allRecordsView = view.findViewById<TextView>(R.id.allRecords)
         // (Optional future) val textKcal = view.findViewById<TextView>(R.id.textKcal)
 
         // Read from SharedPreferences
@@ -61,13 +66,15 @@ class ProgressFragment : Fragment() {
 
         val welcomeView = user.username
         // val kcal = sharedPrefs.getInt("total_kcal", 0)
-
         // Update UI
         textWorkouts.text = workouts.toString()
         textMinutes.text = minutes.toString()
         "Welcome ($welcomeView)".also { welcomeIdText.text = it }
         // textKcal.text = kcal.toString()
-
+        allRecordsView.setOnClickListener {
+            val intent = Intent(requireContext(), ActivityGetRecordsWorkout::class.java)
+            startActivity(intent)
+        }
         return view
     }
 

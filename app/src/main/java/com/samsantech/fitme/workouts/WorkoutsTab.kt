@@ -6,16 +6,22 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.samsantech.fitme.R
 import androidx.core.graphics.toColorInt
+import androidx.fragment.app.activityViewModels
+
 
 class WorkoutsTab : Fragment() {
+    private var tabSwitcher: WorkoutsTabSwitcher? = null
+    private val sharedViewModel: SharedWorkoutViewModel by activityViewModels()
 
-    private val workoutGroups = mapOf(
+    val workoutGroups = mapOf(
         "Chest Workout" to listOf("Bench Press - Barbell", "Incline Dumbbell Press", "Chest Fly - Dumbbell", "Push Up"),
         "Back Workout" to listOf("Pull Up", "Lat Pulldown", "Seated Row - Cable", "Deadlift"),
         "Shoulder Workout" to listOf("Overhead Press - Dumbbell", "Lateral Raise - Dumbbell", "Front Raise - Dumbbell", "Rear Delt Fly"),
@@ -24,6 +30,11 @@ class WorkoutsTab : Fragment() {
         "Leg Workout" to listOf("Squat - Barbell", "Lunges - Dumbbell", "Leg Press - Machine", "Leg Curl - Machine"),
         "Full Body Workout" to listOf("Burpee", "Mountain Climber", "Kettlebell Swing", "Jump Squat")
     )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tabSwitcher = parentFragment as? WorkoutsTabSwitcher
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,8 +45,8 @@ class WorkoutsTab : Fragment() {
             orientation = LinearLayout.VERTICAL
             setPadding(32, 32, 32, 32)
         }
-
-        workoutGroups.forEach { groupName, exercises ->
+        workoutGroups
+            .forEach { groupName, exercises ->
 
             val groupLayout = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.VERTICAL
@@ -67,10 +78,42 @@ class WorkoutsTab : Fragment() {
                 groupLayout.addView(exerciseName)
             }
 
-            val viewAll = TextView(requireContext()).apply {
-                "View All".also { text = it }
+            val actionButtonsLayout = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.END
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                params.setMargins(0, 16, 0, 0)
+                layoutParams = params
+            }
+
+            val addToCustom = TextView(requireContext()).apply {
+                text = "Add to Custom"
                 textSize = 14f
                 setTextColor("#FF7F50".toColorInt())
+                val params = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                layoutParams = params
+                gravity = Gravity.START
+                setOnClickListener {
+                    val currentList = sharedViewModel.selectedGroupNames.value ?: mutableListOf()
+                    if (!currentList.contains(groupName)) {
+                        currentList.add(groupName)
+                        sharedViewModel.selectedGroupNames.value = currentList
+                    }
+                    // get the groupName then go to customTab
+                    tabSwitcher?.switchToCustomTab()
+
+                }
+            }
+
+            val viewAll = TextView(requireContext()).apply {
+                text = "View All"
+                textSize = 14f
+                setTextColor("#FF7F50".toColorInt())
+                val params = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                layoutParams = params
                 gravity = Gravity.END
                 setOnClickListener {
                     val fragment = WorkoutGroupDetailFragment.newInstance(groupName, ArrayList(exercises))
@@ -81,7 +124,9 @@ class WorkoutsTab : Fragment() {
                 }
             }
 
-            groupLayout.addView(viewAll)
+            actionButtonsLayout.addView(addToCustom)
+            actionButtonsLayout.addView(viewAll)
+            groupLayout.addView(actionButtonsLayout)
             layout.addView(groupLayout)
         }
 

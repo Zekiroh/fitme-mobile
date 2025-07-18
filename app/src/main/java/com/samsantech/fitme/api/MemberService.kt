@@ -2,6 +2,7 @@ package com.samsantech.fitme.api
 
 import com.samsantech.fitme.model.AddWorkoutResponse
 import com.samsantech.fitme.model.CoachNote
+import com.samsantech.fitme.model.GetWorkoutResponses
 import com.samsantech.fitme.model.MembershipPlan
 import com.samsantech.fitme.model.ResponseSuccess
 import com.samsantech.fitme.model.WeeklyWorkoutResponse
@@ -31,7 +32,7 @@ interface MemberService {
     fun addWorkout(@Path("userid") userId: Int, @Body payload: WorkoutInput): Call<AddWorkoutResponse>
 
     @GET("members/get-workout/{userid}")
-    fun getWorkouts(@Path("userid") userId: Int): Call<WorkoutResponse>
+    fun getWorkouts(@Path("userid") userId: Int): Call<GetWorkoutResponses>
 
     @GET("members/get-workout-weekly/{userid}")
     fun getWorkoutWeekly(@Path("userid") userId: Int): Call<WeeklyWorkoutResponse>

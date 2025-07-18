@@ -105,6 +105,7 @@
             android:theme="@style/Theme.FitMe" />
         <activity android:name=".screens.TermsOfUseActivity"/>
         <activity android:name=".screens.PrivacyPolicyActivity"/>
+        <activity android:name=".workouts.ActivityGetRecordsWorkout"/>
 
     </application>
 

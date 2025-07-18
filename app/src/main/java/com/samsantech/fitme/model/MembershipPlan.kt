@@ -99,3 +99,34 @@ data class WorkoutDay(
     @SerializedName("date")
     val date: String
 )
+
+
+data class WorkoutItem(
+    val id: Int,
+    val weight: String,
+    val reps: String,
+    val createdAt: String
+)
+
+data class WorkoutGroup(
+    val description: String,
+    val items: List<WorkoutItem>,
+    var isExpanded: Boolean = false
+)
+
+
+data class GetWorkoutItem(
+    val id: Int,
+    @SerializedName("user_id")
+    val userId: Int,
+    val weight: String,
+    val reps: String,
+    val description: String,
+    @SerializedName("created_at")
+    val createdAt: String
+)
+
+data class GetWorkoutResponses(
+    val message: String,
+    val workouts: List<GetWorkoutItem>
+)

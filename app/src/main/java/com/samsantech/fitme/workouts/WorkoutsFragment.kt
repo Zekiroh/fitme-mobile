@@ -12,7 +12,12 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.tabs.TabLayout
 import com.samsantech.fitme.R
 
-class WorkoutsFragment : Fragment() {
+interface WorkoutsTabSwitcher {
+    fun switchToWorkoutsTab()
+    fun switchToCustomTab()
+}
+
+class WorkoutsFragment : Fragment(), WorkoutsTabSwitcher {
 
     private lateinit var tabLayout: TabLayout
     private lateinit var customTabContainer: LinearLayout
@@ -47,14 +52,14 @@ class WorkoutsFragment : Fragment() {
         tabLayout.addTab(tabLayout.newTab().setText("WORKOUTS"))
 
         loadFragment(CustomTab())
-        customTabContainer.visibility = View.VISIBLE
+        customTabContainer.visibility = View.GONE
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.text) {
                     "CUSTOM" -> {
                         loadFragment(CustomTab())
-                        customTabContainer.visibility = View.VISIBLE
+                        customTabContainer.visibility = View.GONE
                     }
                     "PLAN" -> {
                         loadFragment(PlanTab())
@@ -70,10 +75,23 @@ class WorkoutsFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
+    override fun switchToWorkoutsTab() {
+        val workoutsTabIndex = 2
+        tabLayout.getTabAt(workoutsTabIndex)?.select()
+    }
+
+    override fun switchToCustomTab() {
+        val workoutsTabIndex = 0
+        tabLayout.getTabAt(workoutsTabIndex)?.select()
+    }
+
 
     private fun loadFragment(fragment: Fragment) {
         val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
         transaction.replace(R.id.tabContentContainer, fragment)
         transaction.commit()
     }
+
+
+
 }
