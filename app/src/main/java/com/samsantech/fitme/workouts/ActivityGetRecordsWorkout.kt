@@ -48,7 +48,7 @@ class ActivityGetRecordsWorkout : AppCompatActivity() {
                         if (response.isSuccessful && response.body() != null) {
                             val workoutItems = response.body()!!.workouts
 
-                            val groupedWorkouts = parseAndGroupWorkouts(workoutItems)
+                            val groupedWorkouts = parseAndGroupWorkouts(workoutItems,)
                             adapter = WorkoutAdapter(groupedWorkouts)
                             recyclerView.adapter = adapter
                         } else {
@@ -85,7 +85,7 @@ class ActivityGetRecordsWorkout : AppCompatActivity() {
                             createdAt = it.createdAt
                         )
                     },
-                    isExpanded = false // collapsed by default
+                    isExpanded = true // collapsed by default
                 )
             }
     }

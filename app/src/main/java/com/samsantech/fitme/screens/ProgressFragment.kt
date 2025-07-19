@@ -37,6 +37,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
+import kotlin.math.absoluteValue
 
 class ProgressFragment : Fragment() {
 
@@ -176,15 +177,27 @@ class ProgressFragment : Fragment() {
 
                             circleDayView.text = date.dayOfMonth.toString()
                             circleDayView.textSize = 16f
+                            val colors = listOf(
+                                "#FF5733".toColorInt(), // Red-Orange
+                                "#33FF57".toColorInt(), // Green
+                                "#3357FF".toColorInt(), // Blue
+                                "#F1C40F".toColorInt(), // Yellow
+                                "#9B59B6".toColorInt(), // Purple
+                                "#1ABC9C".toColorInt(), // Teal
+                                "#E67E22".toColorInt()  // Orange
+                            )
+
                             if (workoutDates.contains(date)) {
                                 // Highlight workout date
                                 val background = ContextCompat.getDrawable(
                                     requireContext(), R.drawable.circle_background
                                 )?.mutate()
+
                                 if (background is GradientDrawable) {
-                                    background.setColor(
-                                        Color.rgb((0..255).random(), (0..255).random(), (0..255).random())
-                                    )
+                                    val colorIndex = (date.hashCode().absoluteValue % colors.size)
+                                    val color = colors[colorIndex]
+
+                                    background.setColor(color)
                                     circleDayView.background = background
                                     circleDayView.setTextColor(Color.WHITE)
                                 }
@@ -193,6 +206,7 @@ class ProgressFragment : Fragment() {
                                 circleDayView.background = null
                                 circleDayView.setTextColor("#000000".toColorInt())
                             }
+
 
                             layoutAddTexts?.addView(circleDayView)
                         }
