@@ -37,9 +37,9 @@
             android:id="@+id/value_plan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading..."
-            android:textSize="18sp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:text="N/A"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/label_membership_ends"
@@ -55,9 +55,9 @@
             android:id="@+id/value_membership_ends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading.."
-            android:textSize="18sp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:text="N/A"
+            android:textSize="18sp" />
 
     </LinearLayout>
 </ScrollView>

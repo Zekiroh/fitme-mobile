@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="128"
+    android:viewportHeight="128">
+
+    <!-- Red circular background -->
+    <path
+        android:fillColor="#DC2626"
+        android:pathData="M64,0C99.35,0 128,28.65 128,64C128,99.35 99.35,128 64,128C28.65,128 0,99.35 0,64C0,28.65 28.65,0 64,0Z" />
+
+    <!-- White X (cross) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M40,40L88,88M88,40L40,88"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="12"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillAlpha="0" />
+</vector>

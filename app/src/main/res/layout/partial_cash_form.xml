@@ -5,6 +5,7 @@
     android:paddingTop="4dp">
 
     <TextView
+        android:id="@+id/showBellowText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Please proceed to the front desk to complete your payment."

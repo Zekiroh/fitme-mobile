@@ -57,9 +57,7 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun loadUserProfile() {
-        // TODO: Replace this with your API or database fetch, brylle ikaw na dito need ifetch yung data sa db papunta dito para mag work yung actual credentials ng user
-        context?.let { ctx ->
-            val user = SharedPrefHelper.getLoggedInUser(ctx)
+            val user = SharedPrefHelper.getLoggedInUser(requireContext())
             user?.let {
                 val userProfile = UserProfile(
                     name = it.fullName,
@@ -84,5 +82,4 @@ class MyProfileFragment : Fragment() {
                 tvBMI.text = userProfile.bmi
             }
         }
-    }
 }

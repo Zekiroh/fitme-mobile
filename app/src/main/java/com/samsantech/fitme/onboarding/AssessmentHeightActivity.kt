@@ -15,17 +15,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.samsantech.fitme.R
 import com.samsantech.fitme.api.RetrofitClient
 import com.samsantech.fitme.components.BMIInfoCardView
+import com.samsantech.fitme.components.SharedPrefHelper
 import com.samsantech.fitme.main.MainActivity
 import com.samsantech.fitme.model.RegUpdateParam
 
 import com.samsantech.fitme.model.ResponseSuccess
+import com.samsantech.fitme.model.User
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
 
 class AssessmentHeightActivity : AppCompatActivity() {
 
@@ -33,6 +37,7 @@ class AssessmentHeightActivity : AppCompatActivity() {
     private lateinit var unitRecycler: RecyclerView
     private lateinit var bmiCard: BMIInfoCardView
 
+    private var selectedGoal = ""
     private var selectedHeight = 171
     private var selectedUnit = "cm"
     private val units = listOf("cm", "ft • in")
@@ -49,7 +54,7 @@ class AssessmentHeightActivity : AppCompatActivity() {
         heightRecycler = findViewById(R.id.heightRecycler)
         unitRecycler = findViewById(R.id.unitRecycler)
         bmiCard = findViewById(R.id.bmiCard)
-
+        selectedGoal = intent.getStringExtra("goal") ?: ""
         selectedWeight = intent.getIntExtra("weight", 0)
         frequency = intent.getStringExtra("frequency") ?: ""
         selectedGender = intent.getStringExtra("gender") ?: ""
@@ -59,20 +64,21 @@ class AssessmentHeightActivity : AppCompatActivity() {
         updateBMICard()
 
         findViewById<View>(R.id.btnNextHeight).setOnClickListener {
-            val sharedPref = getSharedPreferences("FitMePrefs", Context.MODE_PRIVATE)
-            val userId = sharedPref.getInt("user_id", 0)
+
+            val user = SharedPrefHelper.getLoggedInUser(this)
+            user?.let { user ->
+            val userId = user.id
 
             if (userId == 0) {
                 Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            lifecycleScope.launch {
                 try {
                     RetrofitClient.auth.updateFitReg(
                         userId = userId,
                         body = RegUpdateParam(
-                            fitnessPlan = "Beginner",
+                            fitnessPlan = selectedGoal,
                             height = selectedHeight.toString(),
                             gender = selectedGender,
                             weight = selectedWeight,
@@ -81,12 +87,35 @@ class AssessmentHeightActivity : AppCompatActivity() {
                     ).enqueue(object : Callback<ResponseSuccess> {
                         override fun onResponse(call: Call<ResponseSuccess>, response: Response<ResponseSuccess>) {
                             if (response.isSuccessful && response.body() != null) {
-                                Toast.makeText(this@AssessmentHeightActivity, "Updated!", Toast.LENGTH_SHORT).show()
 
-                                val intent = Intent(this@AssessmentHeightActivity, AssessmentCompleteActivity::class.java)
-                                intent.putExtra("height", "170")
-                                intent.putExtra("unit", "cm")
-                                startActivity(intent)
+                                RetrofitClient.users.getUsers(userId).enqueue(object: Callback<User> {
+                                    override fun onResponse(
+                                        call: Call<User?>,
+                                        response: Response<User?>
+                                    ) {
+                                        val user = response.body()
+                                        val sharedPrefUsersInfo = getSharedPreferences("usersInfo", MODE_PRIVATE)
+                                        sharedPrefUsersInfo.edit().apply {
+                                            val gson = Gson()
+                                            val userJson = gson.toJson(user)
+                                            putString("user_data", userJson)
+                                            apply()
+                                        }
+                                        Toast.makeText(this@AssessmentHeightActivity, "Updated!", Toast.LENGTH_SHORT).show()
+                                        val intent = Intent(this@AssessmentHeightActivity, AssessmentCompleteActivity::class.java)
+                                        intent.putExtra("height", "170")
+                                        intent.putExtra("unit", "cm")
+                                        startActivity(intent)
+                                        finish()
+                                    }
+                                    override fun onFailure(
+                                        call: Call<User?>,
+                                        t: Throwable
+                                    ) {
+                                        Toast.makeText(this@AssessmentHeightActivity, "Failed: ${t.message}", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                })
                             } else {
                                 Toast.makeText(this@AssessmentHeightActivity, "Failed: ${response.code()}", Toast.LENGTH_SHORT).show()
                             }

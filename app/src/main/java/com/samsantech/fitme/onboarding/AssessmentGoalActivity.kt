@@ -90,6 +90,7 @@ class AssessmentGoalActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("gender", selectedGender)
             startActivity(intent)
+            finish()
         }
 
         backButton.setOnClickListener {

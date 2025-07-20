@@ -47,6 +47,7 @@ class AssessmentWeightActivity : AppCompatActivity() {
             val intent = Intent(this, AssessmentHeightActivity::class.java)
             intent.putExtra("weight", selectedWeight)
             intent.putExtra("unit", selectedUnit)
+            intent.putExtra("goal", selectedGoal)
             intent.putExtra("gender", selectedGender)
             intent.putExtra("frequency", frequency)
             startActivity(intent)

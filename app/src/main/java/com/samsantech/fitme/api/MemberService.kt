@@ -7,6 +7,9 @@ import com.samsantech.fitme.model.MembershipPlan
 import com.samsantech.fitme.model.ResponseSuccess
 import com.samsantech.fitme.model.WeeklyWorkoutResponse
 import com.samsantech.fitme.model.WorkoutInput
+import com.samsantech.fitme.model.WorkoutPlan
+import com.samsantech.fitme.model.WorkoutPlanRequest
+import com.samsantech.fitme.model.WorkoutPlanResponse
 import com.samsantech.fitme.model.WorkoutResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -36,4 +39,7 @@ interface MemberService {
 
     @GET("members/get-workout-weekly/{userid}")
     fun getWorkoutWeekly(@Path("userid") userId: Int): Call<WeeklyWorkoutResponse>
+
+    @POST("members/ai-workout-suggestion")
+    fun getAiWorkoutSuggestion(@Body param: WorkoutPlanRequest): Call<WorkoutPlanResponse>
 }

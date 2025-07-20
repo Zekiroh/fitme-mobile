@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp">
+
+    <!-- Failure Icon -->
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_failed"
+        android:contentDescription="Failure Icon"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Failed!"
+        android:textColor="#FF4343"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Sub Message -->
+    <TextView
+        android:id="@+id/textFailureMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="We couldn’t process your transaction. Please try again or contact support."
+        android:textColor="#333333"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Retry Button -->
+    <Button
+        android:id="@+id/paymentButtonFailed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go Back to Payment"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/rounded_button" />
+</LinearLayout>

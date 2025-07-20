@@ -45,6 +45,22 @@ object RetrofitClient {
             .create(AssistanceService::class.java)
     }
 
+    val payments: Payments by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(Payments::class.java)
+    }
+
+    val users: Users by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(Users::class.java)
+    }
+
     // Recommendation service
     val recommendation: Recommendation by lazy {
         Retrofit.Builder()

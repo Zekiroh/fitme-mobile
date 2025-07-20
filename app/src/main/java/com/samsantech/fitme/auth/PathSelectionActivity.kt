@@ -1,5 +1,6 @@
 package com.samsantech.fitme.auth
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.animation.ScaleAnimation
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import com.samsantech.fitme.R
 import com.samsantech.fitme.api.RetrofitClient
 import com.samsantech.fitme.info.PrivacyPolicyActivity
@@ -114,6 +116,14 @@ class PathSelectionActivity : AppCompatActivity() {
 
             RetrofitClient.auth.registerUser(registerRequest).enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                    val user = response.body()?.user
+                    val sharedPrefUsersInfo = getSharedPreferences("usersInfo", MODE_PRIVATE)
+                    sharedPrefUsersInfo.edit().apply {
+                        val gson = Gson()
+                        val userJson = gson.toJson(user)
+                        putString("user_data", userJson)
+                        apply()
+                    }
                     val intent = Intent(this@PathSelectionActivity, FreeSuccessActivity::class.java)
                     intent.putExtra("from", "no_membership")
                     startActivity(intent)

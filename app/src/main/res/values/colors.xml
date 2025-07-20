@@ -8,4 +8,7 @@
     <color name="bmi_normal">#10B981</color>      <!-- Green -->
     <color name="bmi_overweight">#FACC15</color>  <!-- Yellow -->
     <color name="bmi_obese">#EF4444</color>       <!-- Red -->
+    <color name="orange">#FF7043</color>
+    <color name="light_gray">#F6F6F6</color>
+
 </resources>

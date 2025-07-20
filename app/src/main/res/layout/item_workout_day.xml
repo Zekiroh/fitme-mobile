@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/workoutDayCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_margin="5dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/card_background"
+    android:elevation="6dp">
+
+    <TextView
+        android:id="@+id/dayTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monday"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/muscleGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chest and Triceps"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginTop="4dp" />
+
+    <LinearLayout
+        android:id="@+id/exerciseContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp" />
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/orange"
+        android:textColor="@android:color/white"
+        android:layout_marginVertical="16dp"/>
+
+</LinearLayout>

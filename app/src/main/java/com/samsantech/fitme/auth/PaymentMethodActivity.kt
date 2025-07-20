@@ -1,5 +1,7 @@
 package com.samsantech.fitme.auth
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -22,6 +24,8 @@ import com.samsantech.fitme.model.RegisterResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.core.graphics.toColorInt
+import com.samsantech.fitme.payments.PaymentActivity
 
 class PaymentMethodActivity : AppCompatActivity() {
 
@@ -31,14 +35,16 @@ class PaymentMethodActivity : AppCompatActivity() {
     private var isAgreed = false
     private var selectedMethod: String = ""
 
+
+    @SuppressLint("MissingInflatedId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment_method)
 
         val fitMeText = findViewById<TextView>(R.id.textFitMe)
         val styledText = SpannableString("FitMe").apply {
-            setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), 0, 3, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(ForegroundColorSpan(Color.parseColor("#BEBEBE")), 3, 5, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(ForegroundColorSpan("#F97316".toColorInt()), 0, 3, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(ForegroundColorSpan("#BEBEBE".toColorInt()), 3, 5, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         fitMeText.text = styledText
 
@@ -84,8 +90,8 @@ class PaymentMethodActivity : AppCompatActivity() {
             }
         }, termsStart, termsEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        span.setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), privacyStart, privacyEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-        span.setSpan(ForegroundColorSpan(Color.parseColor("#F97316")), termsStart, termsEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        span.setSpan(ForegroundColorSpan("#F97316".toColorInt()), privacyStart, privacyEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        span.setSpan(ForegroundColorSpan("#F97316".toColorInt()), termsStart, termsEnd, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         privacyTextView.text = span
         privacyTextView.movementMethod = LinkMovementMethod.getInstance()
@@ -101,6 +107,7 @@ class PaymentMethodActivity : AppCompatActivity() {
                     R.id.cardCvv
                 ).mapNotNull { findViewById<EditText?>(it)?.text?.toString()?.trim() }.all { it.isNotEmpty() }
                 "CASH" -> true
+                "ONLINE_PAYMENT" -> true
                 else -> false
             }
         }
@@ -118,10 +125,12 @@ class PaymentMethodActivity : AppCompatActivity() {
         }
 
         val containerGCash = findViewById<LinearLayout>(R.id.containerGCash)
+        val containerOnlinePayment = findViewById<LinearLayout>(R.id.containerOnlinePayment)
         val containerCard = findViewById<LinearLayout>(R.id.containerCard)
         val containerCash = findViewById<LinearLayout>(R.id.containerCOD)
 
         val radioGCash = findViewById<RadioButton>(R.id.paymentGCash)
+        val onlinePaymentRadio = findViewById<RadioButton>(R.id.onlinePaymentRadio)
         val radioCard = findViewById<RadioButton>(R.id.paymentCard)
         val radioCash = findViewById<RadioButton>(R.id.paymentCOD)
 
@@ -131,6 +140,7 @@ class PaymentMethodActivity : AppCompatActivity() {
             radioGCash.isChecked = false
             radioCard.isChecked = false
             radioCash.isChecked = false
+            onlinePaymentRadio.isChecked = false
         }
 
         fun updateButtonLabel(method: String) {
@@ -138,6 +148,7 @@ class PaymentMethodActivity : AppCompatActivity() {
                 "GCASH" -> "Proceed to GCash Payment"
                 "CARD" -> "Proceed to Card Payment"
                 "CASH" -> "Confirm and Pay at Front Desk"
+                "ONLINE_PAYMENT" -> "Continue Online Payment "
                 else -> "Continue"
             }
         }
@@ -151,6 +162,7 @@ class PaymentMethodActivity : AppCompatActivity() {
                     "GCASH" -> R.layout.partial_gcash_form
                     "CARD" -> R.layout.partial_card_form
                     "CASH" -> R.layout.partial_cash_form
+                    "ONLINE_PAYMENT" -> R.layout.partial_cash_form
                     else -> return
                 }, paymentDetails, false
             )
@@ -187,6 +199,13 @@ class PaymentMethodActivity : AppCompatActivity() {
             radioGCash.isChecked = true
             renderInputs("GCASH")
             updateButtonLabel("GCASH")
+        }
+        containerOnlinePayment.setOnClickListener {
+            clearRadioButtons()
+            onlinePaymentRadio.isChecked = true
+            renderInputs("ONLINE_PAYMENT")
+
+            updateButtonLabel("ONLINE_PAYMENT")
         }
 
         containerCard.setOnClickListener {
@@ -241,14 +260,24 @@ class PaymentMethodActivity : AppCompatActivity() {
             )
 
             Log.d("REGISTER_DEBUG", Gson().toJson(request))
-
             RetrofitClient.auth.registerUser(request).enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                     if (response.isSuccessful && response.body()?.success == true) {
+                        val user = response.body()?.user
+                        val sharedPrefUsersInfo = getSharedPreferences("usersInfo",MODE_PRIVATE)
+                        sharedPrefUsersInfo.edit().apply {
+                            val gson = Gson()
+                            val userJson = gson.toJson(user)
+                            putString("user_data", userJson)
+                            apply()
+                        }
                         val intent = when (selectedMethod) {
                             "CASH" -> Intent(this@PaymentMethodActivity, CashPendingActivity::class.java)
+                            "ONLINE_PAYMENT" -> Intent(this@PaymentMethodActivity, PaymentActivity::class.java)
                             else -> Intent(this@PaymentMethodActivity, SuccessActivity::class.java)
                         }
+                        intent.putExtra("selectedPrice", priceInt)
+                        intent.putExtra("selectedPlan", selectedPlan)
                         startActivity(intent)
                         finish()
                     } else {

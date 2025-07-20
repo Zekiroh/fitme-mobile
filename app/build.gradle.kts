@@ -69,6 +69,8 @@ dependencies {
     // WebSocket (Socket.IO Client)
     implementation("io.socket:socket.io-client:2.0.1")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
