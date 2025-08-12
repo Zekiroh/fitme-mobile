@@ -5,6 +5,7 @@ import com.samsantech.fitme.model.PaymentRequest
 import com.samsantech.fitme.model.PaymentRequestCallback
 import com.samsantech.fitme.model.PaymentResponse
 import com.samsantech.fitme.model.PaymentStatusResponse
+import com.samsantech.fitme.model.PlanResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,4 +18,7 @@ interface Payments {
 
     @POST("payment/payment-callback/{userid}")
     fun paymentCallBack(@Path("userid") userId: Int, @Body request: PaymentRequestCallback): Call<PaymentStatusResponse>
+
+    @GET("payment/get-plan")
+    fun getPlans(): Call<PlanResponse>
 }

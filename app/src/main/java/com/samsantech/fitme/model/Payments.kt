@@ -45,3 +45,23 @@ data class PaymentErrorResponse(
     @SerializedName("success") val success: Boolean,
     @SerializedName("message") val message: String
 )
+
+data class PlanResponse(
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("plans")
+    val plans: List<Plan>
+)
+
+data class Plan(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("plan")
+    val plan: String,
+    @SerializedName("price")
+    val price: Int,
+    @SerializedName("months_count")
+    val monthsCount: Int,
+    @SerializedName("is_active")
+    val isActive: Int
+)

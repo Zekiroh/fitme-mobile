@@ -25,6 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import androidx.core.graphics.toColorInt
+import com.samsantech.fitme.model.ApiErrorResponse
 import com.samsantech.fitme.payments.PaymentActivity
 
 class PaymentMethodActivity : AppCompatActivity() {
@@ -281,10 +282,15 @@ class PaymentMethodActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        val errorMsg = response.body()?.message ?: "Registration failed. Please try again."
+                        val errorBody = response.errorBody()
+                        val errorString = errorBody?.string()
+
+                        val gson = Gson()
+                        val apiError = gson.fromJson(errorString, ApiErrorResponse::class.java)
+                        val errorMsg = apiError.error?.sqlMessage ?: apiError.message
+
                         Toast.makeText(this@PaymentMethodActivity, errorMsg, Toast.LENGTH_LONG).show()
-                    }
-                }
+                    } }
 
                 override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
                     Toast.makeText(this@PaymentMethodActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()

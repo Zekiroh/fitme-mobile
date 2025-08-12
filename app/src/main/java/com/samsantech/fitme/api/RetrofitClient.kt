@@ -9,7 +9,7 @@ import android.util.Log
 import retrofit2.create
 
 object RetrofitClient {
-//    private const val LOCAL_URL = "http://10.0.2.2:5000/"
+//    private const val LOCAL_URL = "http://192.168.1.129:5291/api/"
     private const val LOCAL_URL = "https://iavnscdgtc.a.pinggy.link/api/"
     private const val PROD_URL = "https://fitmegym.com/api/"
 

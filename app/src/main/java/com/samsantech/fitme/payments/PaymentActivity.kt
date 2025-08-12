@@ -55,9 +55,8 @@ class PaymentActivity : AppCompatActivity() {
                                 response: Response<PaymentStatusResponse?>
                             ) {
                                 val result = response.body()
-                                println(result.toString())
+//
                                 if (response.isSuccessful && result?.success == true) {
-                                    // ✅ Payment succeeded
                                     startActivity(Intent(this@PaymentActivity, SuccessActivity::class.java))
                                     finish()
                                 } else {

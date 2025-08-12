@@ -6,22 +6,30 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.content.Intent
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.samsantech.fitme.R
+import com.samsantech.fitme.api.RetrofitClient
+import com.samsantech.fitme.model.Plan
+import com.samsantech.fitme.model.PlanResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MembershipPlanActivity : AppCompatActivity() {
 
-    private lateinit var planBasic: RadioButton
-    private lateinit var planStandard: RadioButton
-    private lateinit var planPremium: RadioButton
-
-    private lateinit var containerBasic: LinearLayout
-    private lateinit var containerStandard: LinearLayout
-    private lateinit var containerPremium: LinearLayout
-
+    private lateinit var radioGroupPlans: RadioGroup
     private lateinit var nextButton: Button
-    private var selectedPlan: RadioButton? = null
+    private lateinit var loadingIndicator: ProgressBar
+    private lateinit var errorText: TextView
+    private lateinit var retryButton: Button
+    private lateinit var noPlansText: TextView
+    private lateinit var plansContainer: RadioGroup
+    
+    private var selectedPlan: Plan? = null
+    private var plans: List<Plan> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,23 +49,16 @@ class MembershipPlanActivity : AppCompatActivity() {
         fitMeText.text = styledText
 
         // Bind views
-        planBasic = findViewById(R.id.planBasic)
-        planStandard = findViewById(R.id.planStandard)
-        planPremium = findViewById(R.id.planPremium)
-
-        containerBasic = planBasic.parent as LinearLayout
-        containerStandard = planStandard.parent as LinearLayout
-        containerPremium = planPremium.parent as LinearLayout
-
+        radioGroupPlans = findViewById(R.id.radioGroupPlans)
         nextButton = findViewById(R.id.buttonNext)
-        nextButton.isEnabled = false // initially disabled
+        loadingIndicator = findViewById(R.id.loadingIndicator)
+        errorText = findViewById(R.id.errorText)
+        retryButton = findViewById(R.id.retryButton)
+        noPlansText = findViewById(R.id.noPlansText)
+        plansContainer = findViewById(R.id.radioGroupPlans)
 
-        resetIcons()
-
-        // Plan block click listeners
-        setupPlanClick(containerBasic, planBasic)
-        setupPlanClick(containerStandard, planStandard)
-        setupPlanClick(containerPremium, planPremium)
+        // Initially disable next button
+        nextButton.isEnabled = false
 
         // Back button
         findViewById<ImageView>(R.id.backButton).setOnClickListener {
@@ -66,85 +67,152 @@ class MembershipPlanActivity : AppCompatActivity() {
 
         // Navigate to payment
         nextButton.setOnClickListener {
-            val selectedId = selectedPlan?.id
+            selectedPlan?.let { plan ->
+                val fullName = intent.getStringExtra("fullName") ?: ""
+                val username = intent.getStringExtra("username") ?: ""
+                val email = intent.getStringExtra("email") ?: ""
+                val password = intent.getStringExtra("password") ?: ""
 
-            val plan = when (selectedId) {
-                R.id.planBasic -> "Starter"
-                R.id.planStandard -> "Standard"
-                R.id.planPremium -> "Pro"
-                else -> null
-            }
-
-            val price = when (selectedId) {
-                R.id.planBasic -> "₱1,500"
-                R.id.planStandard -> "₱6,000"
-                R.id.planPremium -> "₱8,000"
-                else -> null
-            }
-
-            val fullName = intent.getStringExtra("fullName") ?: ""
-            val username = intent.getStringExtra("username") ?: ""
-            val email = intent.getStringExtra("email") ?: ""
-            val password = intent.getStringExtra("password") ?: ""
-
-            if (plan != null && price != null) {
                 val intent = Intent(this, PaymentMethodActivity::class.java)
-                intent.putExtra("selectedPlan", plan)
-                intent.putExtra("selectedPrice", price)
+                intent.putExtra("selectedPlan", plan.plan)
+                intent.putExtra("selectedPrice", "₱${plan.price}")
+                intent.putExtra("planId", plan.id)
                 intent.putExtra("fullName", fullName)
                 intent.putExtra("username", username)
                 intent.putExtra("email", email)
                 intent.putExtra("password", password)
                 startActivity(intent)
-            } else {
-                toast("Select a plan first!")
+            } ?: run {
+                Toast.makeText(this, "Select a plan first!", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Retry button
+        retryButton.setOnClickListener {
+            fetchPlans()
+        }
+
+        // Fetch plans from API
+        fetchPlans()
     }
 
-    private fun setupPlanClick(container: LinearLayout, radioButton: RadioButton) {
-        container.setOnClickListener {
-            clearAllSelections()
-            radioButton.isChecked = true
-            selectedPlan = radioButton
-            nextButton.isEnabled = true // enable after selection
-
-            when (radioButton.id) {
-                R.id.planBasic -> containerBasic.setBackgroundResource(R.drawable.plan_option_background_checked)
-                R.id.planStandard -> containerStandard.setBackgroundResource(R.drawable.plan_option_background_checked)
-                R.id.planPremium -> containerPremium.setBackgroundResource(R.drawable.plan_option_background_checked)
+    private fun fetchPlans() {
+        showLoading(true)
+        
+        RetrofitClient.payments.getPlans().enqueue(object : Callback<PlanResponse> {
+            override fun onResponse(call: Call<PlanResponse>, response: Response<PlanResponse>) {
+                showLoading(false)
+                
+                if (response.isSuccessful) {
+                    val planResponse = response.body()
+                    if (planResponse?.plans != null) {
+                        plans = planResponse.plans.filter { it.isActive == 1 }
+                        if (plans.isNotEmpty()) {
+                            populatePlans()
+                        } else {
+                            showNoPlans()
+                        }
+                    } else {
+                        showNoPlans()
+                    }
+                } else {
+                    showError("Failed to load plans: ${response.code()}")
+                }
             }
 
-            radioButton.setButtonDrawable(R.drawable.ic_check_selected)
+            override fun onFailure(call: Call<PlanResponse>, t: Throwable) {
+                showLoading(false)
+                showError("Network error: ${t.message}")
+            }
+        })
+    }
+
+    private fun populatePlans() {
+        plansContainer.removeAllViews()
+        
+        plans.forEach { plan ->
+            val planView = createPlanView(plan)
+            plansContainer.addView(planView)
         }
+        
+        plansContainer.visibility = View.VISIBLE
+        noPlansText.visibility = View.GONE
+    }
+
+    private fun createPlanView(plan: Plan): View {
+        val inflater = LayoutInflater.from(this)
+        val planView = inflater.inflate(R.layout.item_plan_option, plansContainer, false)
+        
+        val container = planView.findViewById<LinearLayout>(R.id.planContainer)
+        val radioButton = planView.findViewById<RadioButton>(R.id.planRadioButton)
+        val planName = planView.findViewById<TextView>(R.id.planName)
+        val planDuration = planView.findViewById<TextView>(R.id.planDuration)
+        val planPrice = planView.findViewById<TextView>(R.id.planPrice)
+        
+        // Set plan data
+        planName.text = plan.plan
+        planDuration.text = "${plan.monthsCount} Month${if (plan.monthsCount > 1) "s" else ""}"
+        planPrice.text = "₱${plan.price}"
+        
+        // Set click listener
+        container.setOnClickListener {
+            selectPlan(plan, radioButton, container)
+        }
+        
+        return planView
+    }
+
+    private fun selectPlan(plan: Plan, radioButton: RadioButton, container: LinearLayout) {
+        // Clear previous selection
+        clearAllSelections()
+        
+        // Select new plan
+        radioButton.isChecked = true
+        selectedPlan = plan
+        nextButton.isEnabled = true
+        
+        // Update background
+        container.setBackgroundResource(R.drawable.plan_option_background_checked)
+        radioButton.setButtonDrawable(R.drawable.ic_check_selected)
     }
 
     private fun clearAllSelections() {
-        val unselected = R.drawable.ic_check_unselected
-
-        planBasic.isChecked = false
-        planBasic.setButtonDrawable(unselected)
-        containerBasic.setBackgroundResource(R.drawable.plan_option_background)
-
-        planStandard.isChecked = false
-        planStandard.setButtonDrawable(unselected)
-        containerStandard.setBackgroundResource(R.drawable.plan_option_background)
-
-        planPremium.isChecked = false
-        planPremium.setButtonDrawable(unselected)
-        containerPremium.setBackgroundResource(R.drawable.plan_option_background)
-
+        for (i in 0 until plansContainer.childCount) {
+            val child = plansContainer.getChildAt(i)
+            val container = child.findViewById<LinearLayout>(R.id.planContainer)
+            val radioButton = child.findViewById<RadioButton>(R.id.planRadioButton)
+            
+            container.setBackgroundResource(R.drawable.plan_option_background)
+            radioButton.isChecked = false
+            radioButton.setButtonDrawable(R.drawable.ic_check_unselected)
+        }
+        
         selectedPlan = null
-        nextButton.isEnabled = false // disable again if user deselects all
+        nextButton.isEnabled = false
     }
 
-    private fun resetIcons() {
-        planBasic.setButtonDrawable(R.drawable.ic_check_unselected)
-        planStandard.setButtonDrawable(R.drawable.ic_check_unselected)
-        planPremium.setButtonDrawable(R.drawable.ic_check_unselected)
+    private fun showLoading(show: Boolean) {
+        loadingIndicator.visibility = if (show) View.VISIBLE else View.GONE
+        plansContainer.visibility = if (show) View.GONE else View.VISIBLE
+        errorText.visibility = View.GONE
+        retryButton.visibility = View.GONE
+        noPlansText.visibility = View.GONE
     }
 
-    private fun toast(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    private fun showError(message: String) {
+        errorText.text = message
+        errorText.visibility = View.VISIBLE
+        retryButton.visibility = View.VISIBLE
+        plansContainer.visibility = View.GONE
+        loadingIndicator.visibility = View.GONE
+        noPlansText.visibility = View.GONE
+    }
+
+    private fun showNoPlans() {
+        noPlansText.visibility = View.VISIBLE
+        plansContainer.visibility = View.GONE
+        loadingIndicator.visibility = View.GONE
+        errorText.visibility = View.GONE
+        retryButton.visibility = View.GONE
     }
 }
