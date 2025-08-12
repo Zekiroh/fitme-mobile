@@ -89,30 +89,14 @@ class WorkoutsTab : Fragment() {
                 layoutParams = params
             }
 
-            val addToCustom = TextView(requireContext()).apply {
-                text = "Add to Custom"
-                textSize = 14f
-                setTextColor("#FF7F50".toColorInt())
-                val params = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                layoutParams = params
-                gravity = Gravity.START
-                setOnClickListener {
-                    val currentList = sharedViewModel.selectedGroupNames.value ?: mutableListOf()
-                    if (!currentList.contains(groupName)) {
-                        currentList.add(groupName)
-                        sharedViewModel.selectedGroupNames.value = currentList
-                    }
-                    // get the groupName then go to customTab
-                    tabSwitcher?.switchToCustomTab()
-
-                }
-            }
-
             val viewAll = TextView(requireContext()).apply {
                 text = "View All"
                 textSize = 14f
                 setTextColor("#FF7F50".toColorInt())
-                val params = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
                 layoutParams = params
                 gravity = Gravity.END
                 setOnClickListener {
@@ -124,7 +108,6 @@ class WorkoutsTab : Fragment() {
                 }
             }
 
-            actionButtonsLayout.addView(addToCustom)
             actionButtonsLayout.addView(viewAll)
             groupLayout.addView(actionButtonsLayout)
             layout.addView(groupLayout)
