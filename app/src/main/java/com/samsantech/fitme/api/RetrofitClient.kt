@@ -14,7 +14,7 @@ object RetrofitClient {
     private const val PROD_URL = "https://fitmegym.com/api/"
 
     // Change this value to switch environment
-    private const val USE_LOCAL = true
+    private const val USE_LOCAL = false
 
     private val BASE_URL = if (USE_LOCAL) LOCAL_URL else PROD_URL
 
@@ -36,6 +36,14 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MemberService::class.java)
+    }
+
+    val aiFitness: FitnessAi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(FitnessAi::class.java)
     }
     val assistance: AssistanceService by lazy {
         Retrofit.Builder()

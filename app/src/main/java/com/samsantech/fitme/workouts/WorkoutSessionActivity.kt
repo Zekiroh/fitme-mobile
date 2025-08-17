@@ -100,6 +100,12 @@ class WorkoutSessionActivity : AppCompatActivity() {
             override fun onFinish() {
                 markExerciseAsDone(button, cardLayout)
                 completedCount++
+                
+                // Mark exercise as completed in shared preferences
+                val exerciseName = getExerciseNameFromCard(cardLayout)
+                val dayName = intent.getStringExtra("dayName") ?: "Unknown"
+                markExerciseAsCompleted(dayName, exerciseName)
+                
                 if (completedCount == totalExercises) {
                     Toast.makeText(this@WorkoutSessionActivity, "Workout complete! 👏", Toast.LENGTH_SHORT).show()
                     finish()
@@ -107,6 +113,18 @@ class WorkoutSessionActivity : AppCompatActivity() {
             }
         }.start()
     }
+    
+    private fun getExerciseNameFromCard(cardLayout: LinearLayout): String {
+        // Extract exercise name from the first TextView (title)
+        val titleView = cardLayout.getChildAt(0) as? TextView
+        return titleView?.text?.toString()?.removePrefix("• ") ?: "Unknown Exercise"
+    }
+    
+    private fun markExerciseAsCompleted(dayName: String, exerciseName: String) {
+        val sharedPrefs = getSharedPreferences("workout_completion", MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("${dayName}_${exerciseName}", true).apply()
+    }
+
     private fun markExerciseAsDone(button: Button, cardLayout: LinearLayout) {
         cardLayout.setBackgroundColor(Color.LTGRAY)
         "Completed".also { button.text = it }

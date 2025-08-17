@@ -5,7 +5,7 @@ import java.io.Serializable
 data class WorkoutPlanResponse (
     val success: Boolean,
     val message: String,
-    val data: WorkoutPlan
+    val plan: WorkoutPlan
 )
 data class WorkoutPlan(
     val plan_name: String,
@@ -40,6 +40,7 @@ data class Nutrition(
     val meal_frequency: String
 )
 data class WorkoutPlanRequest(
+    val user_id: Int?,
     val goal: String?,
     val level: String?
 )
