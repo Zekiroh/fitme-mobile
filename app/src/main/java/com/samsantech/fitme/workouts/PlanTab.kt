@@ -471,6 +471,22 @@ class PlanTab : Fragment() {
             val isToday = day.day.contains(today, ignoreCase = true)
             val isRest = day.exercises.isEmpty()
             val isCompleted = day.done || isWorkoutDayCompleted(day)
+            
+            // Add day status indicator
+            val dayStatus = when {
+                isToday -> "Today"
+                isPastDay(day.day) -> "Past Day"
+                else -> "Future Day"
+            }
+            
+            val statusText = TextView(requireContext()).apply {
+                text = dayStatus
+                textSize = 10f
+                setTextColor(if (isToday) ContextCompat.getColor(requireContext(), R.color.orange) else Color.GRAY)
+                setTypeface(null, Typeface.BOLD)
+                setPadding(0, 2, 0, 8)
+            }
+            exerciseContainer.addView(statusText)
 
             when {
                 isRest -> {
@@ -484,6 +500,37 @@ class PlanTab : Fragment() {
                     exerciseContainer.visibility = View.VISIBLE
                     exerciseContainer.addView(restText)
                     containerLayout.addView(view)
+                }
+
+                isCompleted -> {
+                    // ✅ Show completed workout day (past or present)
+                    startButton.visibility = View.VISIBLE
+                    startButton.isEnabled = false
+                    startButton.alpha = 0.5f
+                    startButton.text = "Completed ✓"
+                    exerciseContainer.visibility = View.VISIBLE
+
+                    // Add completion indicator
+                    val completionText = TextView(requireContext()).apply {
+                        val isPast = isPastDay(day.day)
+                        text = if (isPast) "✅ Completed on ${day.day}" else "🎉 This workout is already completed!"
+                        textSize = 14f
+                        setTextColor(ContextCompat.getColor(requireContext(), R.color.orange))
+                        setTypeface(null, Typeface.BOLD)
+                        setPadding(0, 8, 0, 16)
+                        gravity = Gravity.CENTER
+                    }
+                    exerciseContainer.addView(completionText)
+
+                    // Render exercises with completion status
+                    for (exercise in day.exercises) {
+                        val isExerciseCompleted = isExerciseCompleted(day.day, exercise.name)
+                        val itemLayout = createExerciseLayout(exercise, isExerciseCompleted, day.day)
+                        exerciseContainer.addView(itemLayout)
+                    }
+
+                    // Mark as completed with enhanced visual feedback
+                    markWorkoutDayAsCompleted(view, startButton, dayTitle, muscleGroup)
                 }
 
                 isToday -> {
@@ -514,50 +561,77 @@ class PlanTab : Fragment() {
                         exerciseContainer.addView(itemLayout)
                     }
 
-                    if (isCompleted) {
-                        // ✅ Mark as completed with enhanced visual feedback
-                        markWorkoutDayAsCompleted(view, startButton, dayTitle, muscleGroup)
-                    } else {
-                        // Only add view directly once
-                        containerLayout.addView(view)
+                    // Only add view directly once
+                    containerLayout.addView(view)
 
-                        startButton.setOnClickListener {
-                            val intent = Intent(requireContext(), WorkoutSessionActivity::class.java)
-                            intent.putExtra("exercises", ArrayList(day.exercises))
-                            intent.putExtra("dayName", day.day)
-                            startActivity(intent)
-                        }
+                    startButton.setOnClickListener {
+                        val intent = Intent(requireContext(), WorkoutSessionActivity::class.java)
+                        intent.putExtra("exercises", ArrayList(day.exercises))
+                        intent.putExtra("dayName", day.day)
+                        startActivity(intent)
                     }
                 }
 
                 else -> {
-                    // 🔒 Locked: gray card with padlock icon
-                    startButton.visibility = View.GONE
-                    dayTitle.setTextColor(Color.LTGRAY)
-                    muscleGroup.setTextColor(Color.LTGRAY)
-                    exerciseContainer.visibility = View.VISIBLE
-                    exerciseContainer.removeAllViews()
+                    // Check if this is a completed future day
+                    if (isCompleted) {
+                        // ✅ Show completed future workout day
+                        startButton.visibility = View.VISIBLE
+                        startButton.isEnabled = false
+                        startButton.alpha = 0.5f
+                        startButton.text = "Completed ✓"
+                        exerciseContainer.visibility = View.VISIBLE
 
-                    val lockWrapper = FrameLayout(requireContext()).apply {
-                        val params = LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            200
-                        )
-                        params.setMargins(0, 16, 0, 0)
-                        layoutParams = params
-                        background = ContextCompat.getDrawable(requireContext(), R.drawable.locked_day_bg)
+                        // Add completion indicator
+                        val completionText = TextView(requireContext()).apply {
+                            val isPast = isPastDay(day.day)
+                            text = if (isPast) "✅ Completed on ${day.day}" else "🎉 This workout is already completed!"
+                            textSize = 14f
+                            setTextColor(ContextCompat.getColor(requireContext(), R.color.orange))
+                            setTypeface(null, Typeface.BOLD)
+                            setPadding(0, 8, 0, 16)
+                            gravity = Gravity.CENTER
+                        }
+                        exerciseContainer.addView(completionText)
+
+                        // Render exercises with completion status
+                        for (exercise in day.exercises) {
+                            val isExerciseCompleted = isExerciseCompleted(day.day, exercise.name)
+                            val itemLayout = createExerciseLayout(exercise, isExerciseCompleted, day.day)
+                            exerciseContainer.addView(itemLayout)
+                        }
+
+                        // Mark as completed with enhanced visual feedback
+                        markWorkoutDayAsCompleted(view, startButton, dayTitle, muscleGroup)
+                    } else {
+                        // 🔒 Locked: gray card with padlock icon
+                        startButton.visibility = View.GONE
+                        dayTitle.setTextColor(Color.LTGRAY)
+                        muscleGroup.setTextColor(Color.LTGRAY)
+                        exerciseContainer.visibility = View.VISIBLE
+                        exerciseContainer.removeAllViews()
+
+                        val lockWrapper = FrameLayout(requireContext()).apply {
+                            val params = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                200
+                            )
+                            params.setMargins(0, 16, 0, 0)
+                            layoutParams = params
+                            background = ContextCompat.getDrawable(requireContext(), R.drawable.locked_day_bg)
+                        }
+
+                        val lockIcon = ImageView(requireContext()).apply {
+                            setImageResource(R.drawable.ic_lock)
+                            layoutParams = FrameLayout.LayoutParams(96, 96, Gravity.CENTER)
+                            alpha = 0.6f
+                        }
+
+                        lockWrapper.addView(lockIcon)
+                        exerciseContainer.addView(lockWrapper)
+
+                        containerLayout.addView(view)
                     }
-
-                    val lockIcon = ImageView(requireContext()).apply {
-                        setImageResource(R.drawable.ic_lock)
-                        layoutParams = FrameLayout.LayoutParams(96, 96, Gravity.CENTER)
-                        alpha = 0.6f
-                    }
-
-                    lockWrapper.addView(lockIcon)
-                    exerciseContainer.addView(lockWrapper)
-
-                    containerLayout.addView(view)
                 }
             }
         }
@@ -836,6 +910,17 @@ class PlanTab : Fragment() {
     private fun getTodayName(): String {
         val calendar = java.util.Calendar.getInstance()
         return java.text.SimpleDateFormat("EEEE", java.util.Locale.getDefault()).format(calendar.time)
+    }
+
+    private fun isPastDay(dayName: String): Boolean {
+        val today = getTodayName()
+        val daysOfWeek = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+        
+        val todayIndex = daysOfWeek.indexOf(today)
+        val dayIndex = daysOfWeek.indexOf(dayName)
+        
+        // If day is before today in the week, it's a past day
+        return dayIndex < todayIndex
     }
 
 }
