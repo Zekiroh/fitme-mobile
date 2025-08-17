@@ -19,6 +19,8 @@ import com.samsantech.fitme.api.RetrofitClient
 import com.samsantech.fitme.components.SharedPrefHelper
 import com.samsantech.fitme.model.AddWorkoutResponse
 import com.samsantech.fitme.model.WorkoutInput
+import com.samsantech.fitme.model.CustomWorkoutRequest
+import com.samsantech.fitme.model.CustomWorkoutResponse
 import com.samsantech.fitme.workouts.WorkoutCompletion
 import com.samsantech.fitme.workouts.SharedWorkoutViewModel
 import retrofit2.Call
@@ -45,6 +47,8 @@ class CustomWorkoutFragment : Fragment() {
     private var workoutSeconds = 0
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var workoutTimerRunnable: Runnable
+    private var isWorkoutCompleting = false
+    private lateinit var btnFinish: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +112,7 @@ class CustomWorkoutFragment : Fragment() {
             setColor("#CCCCCC".toColorInt())
         }
 
-        val btnFinish = Button(requireContext()).apply {
+        btnFinish = Button(requireContext()).apply {
             "Finish Workout".also { text = it }
             setTextColor(Color.WHITE)
             background = disabledDrawable
@@ -355,8 +359,27 @@ class CustomWorkoutFragment : Fragment() {
         }
 
         btnFinish.setOnClickListener {
-            // Save workout completion data
-            saveWorkoutCompletion()
+            // Prevent double-clicking
+            if (isWorkoutCompleting) {
+                return@setOnClickListener
+            }
+            
+            // Set flag to prevent multiple submissions
+            isWorkoutCompleting = true
+            
+            // Disable the button to prevent further clicks
+            btnFinish.isEnabled = false
+            btnFinish.text = "Completing..."
+            
+            // Set a safety timeout to reset the state if something goes wrong
+            handler.postDelayed({
+                if (isWorkoutCompleting) {
+                    resetWorkoutCompletionState()
+                }
+            }, 10000) // 10 second timeout
+            
+            // Save workout to API
+            saveWorkoutToApi()
             
             // Update ViewModel with completion status
             exercises?.let { exerciseList ->
@@ -385,33 +408,73 @@ class CustomWorkoutFragment : Fragment() {
         return scrollView
     }
 
-    private fun saveWorkoutCompletion() {
-        val sharedPrefs = requireActivity().getSharedPreferences("FitMePrefs", android.content.Context.MODE_PRIVATE)
-        val editor = sharedPrefs.edit()
 
-        // Save workout count
-        val currentWorkouts = sharedPrefs.getInt("workouts_count", 0) + 1
-        editor.putInt("workouts_count", currentWorkouts)
 
-        // Save total workout time
-        val durationMinutes = workoutSeconds / 60
-        val currentMinutes = sharedPrefs.getInt("total_minutes", 0) + durationMinutes
-        editor.putInt("total_minutes", currentMinutes)
+    private fun saveWorkoutToApi() {
+        val user = SharedPrefHelper.getLoggedInUser(requireContext())
+        user?.let { userData ->
+            var successCount = 0
+            val totalExercises = exercises?.size ?: 0
+            
+            exercises?.forEach { exercise ->
+                val request = CustomWorkoutRequest(
+                    rest = exercise.restTimeSeconds.toString(),
+                    weight = "0", // Default weight since we don't track it in custom exercises
+                    reps = exercise.reps.toString(),
+                    description = exercise.name
+                )
+                
+                RetrofitClient.aiFitness.saveCustomWorkout(userData.id, request)
+                    .enqueue(object : Callback<CustomWorkoutResponse> {
+                        override fun onResponse(
+                            call: Call<CustomWorkoutResponse?>,
+                            response: Response<CustomWorkoutResponse?>
+                        ) {
+                            if (response.isSuccessful && response.body() != null) {
+                                Log.d("CustomWorkout", "Workout saved successfully: ${response.body()?.message}")
+                                successCount++
+                                
+                                // Check if all exercises were saved successfully
+                                if (successCount == totalExercises) {
+                                    Log.d("CustomWorkout", "All workouts saved successfully to API")
+                                }
+                            } else {
+                                Log.e("CustomWorkout", "Failed to save workout: ${response.code()}")
+                                // Reset flag on API failure
+                                resetWorkoutCompletionState()
+                            }
+                        }
 
-        // Mark custom workout as completed
-        editor.putBoolean("custom_workout_completed", true)
-        editor.putLong("custom_workout_completion_time", System.currentTimeMillis())
+                        override fun onFailure(call: Call<CustomWorkoutResponse?>, t: Throwable) {
+                            Log.e("CustomWorkout", "Error saving workout: ${t.localizedMessage}")
+                            // Reset flag on API failure
+                            resetWorkoutCompletionState()
+                        }
+                    })
+            }
+        } ?: run {
+            // No user found, reset state
+            resetWorkoutCompletionState()
+        }
+    }
+
+    private fun resetWorkoutCompletionState() {
+        // Reset the completion flag
+        isWorkoutCompleting = false
         
-        // Save workout details for history
-        val workoutDetails = exercises?.joinToString(",") { "${it.name}:${it.sets}×${it.reps}" } ?: ""
-        editor.putString("last_custom_workout", workoutDetails)
-        editor.putInt("last_custom_workout_duration", workoutSeconds)
-
-        editor.apply()
+        // Re-enable the button
+        btnFinish.isEnabled = true
+        btnFinish.text = "Finish Workout"
+        
+        // Show error message to user
+       // Toast.makeText(requireContext(), "Failed to save workout. Please try again.", Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(workoutTimerRunnable)
+        
+        // Clear any pending completion timeout
+        handler.removeCallbacksAndMessages(null)
     }
 }

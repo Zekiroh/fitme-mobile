@@ -48,6 +48,12 @@ class CustomTab : Fragment() {
             if (completion.isCompleted) {
                 // Refresh the view when workout is completed
                 showCustomWorkout(rootView, sharedViewModel.selectedExercises.value ?: emptyList())
+                
+                // Ensure Add Workouts button is visible after completion
+                val addButton = rootView.findViewById<Button>(R.id.addWorkoutsId)
+                addButton.visibility = View.VISIBLE
+                
+
             }
         }
 
@@ -57,8 +63,12 @@ class CustomTab : Fragment() {
             showCustomWorkout(rootView, sharedViewModel.selectedExercises.value ?: emptyList())
         }
 
+
+
         return rootView
     }
+    
+
 
     override fun onResume() {
         super.onResume()
@@ -67,6 +77,14 @@ class CustomTab : Fragment() {
         if (rootView != null) {
             val exercises = sharedViewModel.selectedExercises.value ?: emptyList()
             showCustomWorkout(rootView, exercises)
+            
+            // Ensure Add Workouts button is visible if no exercises are selected
+            if (exercises.isEmpty()) {
+                val addButton = rootView.findViewById<Button>(R.id.addWorkoutsId)
+                addButton.visibility = View.VISIBLE
+            }
+            
+
         }
     }
 
@@ -85,21 +103,15 @@ class CustomTab : Fragment() {
             setPadding(32, 32, 32, 32)
         }
 
-        // Check if there's a completed workout from ViewModel first, then from SharedPreferences
+        // Check if there's a completed workout from ViewModel
         val completionFromViewModel = sharedViewModel.workoutCompletion.value
-        val sharedPrefs = requireActivity().getSharedPreferences("FitMePrefs", android.content.Context.MODE_PRIVATE)
-        val isWorkoutCompleted = completionFromViewModel?.isCompleted == true || sharedPrefs.getBoolean("custom_workout_completed", false)
-        
-        val completionTime = completionFromViewModel?.completionTime ?: sharedPrefs.getLong("custom_workout_completion_time", 0)
-        val lastWorkoutDetails = completionFromViewModel?.workoutDetails ?: (sharedPrefs.getString("last_custom_workout", "") ?: "")
-        val lastWorkoutDuration = completionFromViewModel?.duration ?: sharedPrefs.getInt("last_custom_workout_duration", 0)
+        val isWorkoutCompleted = completionFromViewModel?.isCompleted == true
 
-        if (isWorkoutCompleted && completionTime > 0) {
+        if (isWorkoutCompleted) {
             // Show completion status and allow creating new workout
-            showWorkoutCompletionStatus(layout, completionTime, lastWorkoutDetails, lastWorkoutDuration)
+            showWorkoutCompletionStatus(layout, completionFromViewModel.completionTime, completionFromViewModel.workoutDetails, completionFromViewModel.duration)
             
-            // Clear the completed workout flags
-            sharedPrefs.edit().putBoolean("custom_workout_completed", false).apply()
+            // Clear the completed workout status
             sharedViewModel.clearWorkoutCompletion()
             
             // Clear selected exercises for new workout
@@ -195,10 +207,11 @@ class CustomTab : Fragment() {
     }
 
     private fun showWorkoutHistory(layout: LinearLayout) {
+        // Show local session workouts if any (for current session only)
         val completedWorkouts = sharedViewModel.getCompletedWorkouts()
         
         if (completedWorkouts.isNotEmpty()) {
-            // History header
+            // Workout History header
             val historyHeader = TextView(requireContext()).apply {
                 text = "Workout History"
                 textSize = 20f
@@ -293,6 +306,16 @@ class CustomTab : Fragment() {
         return cardLayout
     }
 
+
+
+
+
+
+
+
+
+
+
     private fun showWorkoutCompletionStatus(layout: LinearLayout, completionTime: Long, workoutDetails: String, duration: Int) {
         // Completion header
         val completionHeader = TextView(requireContext()).apply {
@@ -376,12 +399,14 @@ class CustomTab : Fragment() {
             layout.addView(summaryCard)
         }
 
-        // Create new workout message
-        val newWorkoutMessage = TextView(requireContext()).apply {
-            text = "Ready for another workout? Tap 'Add Workouts' to create a new custom routine!"
-            textSize = 16f
-            setTextColor(Color.DKGRAY)
-            gravity = Gravity.CENTER
+        // Create new workout button
+        val createNewWorkoutButton = Button(requireContext()).apply {
+            text = "Create New Workout"
+            setBackgroundColor("#FF7F50".toColorInt())
+            setTextColor(Color.WHITE)
+            setOnClickListener {
+                resetToAddWorkoutsState()
+            }
             val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -389,7 +414,19 @@ class CustomTab : Fragment() {
             params.setMargins(0, 32, 0, 0)
             layoutParams = params
         }
-        layout.addView(newWorkoutMessage)
+        layout.addView(createNewWorkoutButton)
+    }
+
+    private fun resetToAddWorkoutsState() {
+        // Clear the completion status and return to Add Workouts state
+        sharedViewModel.clearWorkoutCompletion()
+        sharedViewModel.clearExercises()
+        
+        // Refresh the view to show empty state
+        val rootView = view
+        if (rootView != null) {
+            showCustomWorkout(rootView, emptyList())
+        }
     }
 
     private fun createExerciseCard(exercise: CustomExercise, isLast: Boolean): View {

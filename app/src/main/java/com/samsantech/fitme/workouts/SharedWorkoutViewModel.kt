@@ -3,6 +3,7 @@ package com.samsantech.fitme.workouts
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.samsantech.fitme.model.CustomWorkoutItem
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -36,6 +37,7 @@ class SharedWorkoutViewModel : ViewModel() {
     val selectedExercises = MutableLiveData<MutableList<CustomExercise>>(mutableListOf())
     val workoutCompletion = MutableLiveData<WorkoutCompletion>(WorkoutCompletion())
     val completedWorkouts = MutableLiveData<MutableList<CompletedWorkout>>(mutableListOf())
+    val apiCustomWorkouts = MutableLiveData<MutableList<CustomWorkoutItem>>(mutableListOf())
     
     fun markWorkoutAsCompleted(completion: WorkoutCompletion) {
         workoutCompletion.value = completion
@@ -83,5 +85,19 @@ class SharedWorkoutViewModel : ViewModel() {
     
     fun clearWorkoutHistory() {
         completedWorkouts.value = mutableListOf()
+    }
+    
+    fun addApiCustomWorkout(workout: CustomWorkoutItem) {
+        val current = apiCustomWorkouts.value ?: mutableListOf()
+        current.add(workout)
+        apiCustomWorkouts.value = current
+    }
+    
+    fun getApiCustomWorkouts(): List<CustomWorkoutItem> {
+        return apiCustomWorkouts.value ?: emptyList()
+    }
+    
+    fun clearApiCustomWorkouts() {
+        apiCustomWorkouts.value = mutableListOf()
     }
 }
