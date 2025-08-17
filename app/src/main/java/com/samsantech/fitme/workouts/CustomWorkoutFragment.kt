@@ -12,12 +12,15 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.samsantech.fitme.R
 import androidx.core.graphics.toColorInt
 import com.samsantech.fitme.api.RetrofitClient
 import com.samsantech.fitme.components.SharedPrefHelper
 import com.samsantech.fitme.model.AddWorkoutResponse
 import com.samsantech.fitme.model.WorkoutInput
+import com.samsantech.fitme.workouts.WorkoutCompletion
+import com.samsantech.fitme.workouts.SharedWorkoutViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,6 +40,7 @@ class CustomWorkoutFragment : Fragment() {
     }
 
     private var exercises: List<CustomExercise>? = null
+    private val sharedViewModel: SharedWorkoutViewModel by activityViewModels()
 
     private var workoutSeconds = 0
     private val handler = Handler(Looper.getMainLooper())
@@ -351,26 +355,63 @@ class CustomWorkoutFragment : Fragment() {
         }
 
         btnFinish.setOnClickListener {
-            // Save workout data
-            val sharedPrefs = requireActivity().getSharedPreferences("FitMePrefs", android.content.Context.MODE_PRIVATE)
-            val editor = sharedPrefs.edit()
-
-            val currentWorkouts = sharedPrefs.getInt("workouts_count", 0) + 1
-            editor.putInt("workouts_count", currentWorkouts)
-
-            val durationMinutes = workoutSeconds / 60
-            val currentMinutes = sharedPrefs.getInt("total_minutes", 0) + durationMinutes
-            editor.putInt("total_minutes", currentMinutes)
-
-            editor.apply()
-
-            Toast.makeText(requireContext(), "Workout Finished!", Toast.LENGTH_SHORT).show()
+            // Save workout completion data
+            saveWorkoutCompletion()
+            
+            // Update ViewModel with completion status
+            exercises?.let { exerciseList ->
+                val completion = WorkoutCompletion(
+                    isCompleted = true,
+                    completionTime = System.currentTimeMillis(),
+                    workoutDetails = exerciseList.joinToString(",") { "${it.name}:${it.sets}×${it.reps}" },
+                    duration = workoutSeconds,
+                    exercises = exerciseList
+                )
+                sharedViewModel.markWorkoutAsCompleted(completion)
+            }
+            
+            // Show completion success message
+            Toast.makeText(requireContext(), "Workout Completed! 🎉", Toast.LENGTH_LONG).show()
+            
+            // Stop timer and return to custom tab
             handler.removeCallbacks(workoutTimerRunnable)
+            
+            // Navigate back to custom tab
             requireActivity().supportFragmentManager.popBackStack()
         }
 
         layout.addView(btnFinish)
         scrollView.addView(layout)
         return scrollView
+    }
+
+    private fun saveWorkoutCompletion() {
+        val sharedPrefs = requireActivity().getSharedPreferences("FitMePrefs", android.content.Context.MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+
+        // Save workout count
+        val currentWorkouts = sharedPrefs.getInt("workouts_count", 0) + 1
+        editor.putInt("workouts_count", currentWorkouts)
+
+        // Save total workout time
+        val durationMinutes = workoutSeconds / 60
+        val currentMinutes = sharedPrefs.getInt("total_minutes", 0) + durationMinutes
+        editor.putInt("total_minutes", currentMinutes)
+
+        // Mark custom workout as completed
+        editor.putBoolean("custom_workout_completed", true)
+        editor.putLong("custom_workout_completion_time", System.currentTimeMillis())
+        
+        // Save workout details for history
+        val workoutDetails = exercises?.joinToString(",") { "${it.name}:${it.sets}×${it.reps}" } ?: ""
+        editor.putString("last_custom_workout", workoutDetails)
+        editor.putInt("last_custom_workout_duration", workoutSeconds)
+
+        editor.apply()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(workoutTimerRunnable)
     }
 }
