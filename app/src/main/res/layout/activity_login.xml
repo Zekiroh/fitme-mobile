@@ -89,19 +89,33 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp" />
 
-        <!-- Log In Button -->
-        <Button
-            android:id="@+id/buttonLogin"
+        <!-- Log In Button Container -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log In"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:backgroundTint="#F97316"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/rounded_button" />
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Log In"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:backgroundTint="#F97316"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_button" />
+
+            <ProgressBar
+                android:id="@+id/buttonProgressBar"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminateTint="@android:color/white" />
+
+        </FrameLayout>
 
         <!-- Sign Up Prompt -->
         <LinearLayout

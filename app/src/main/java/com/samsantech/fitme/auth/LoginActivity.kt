@@ -10,7 +10,10 @@ import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.View
 import android.widget.*
+import android.graphics.drawable.Drawable
+import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.samsantech.fitme.R
@@ -28,6 +31,12 @@ import androidx.core.content.edit
 
 class LoginActivity : AppCompatActivity() {
     private var isPasswordVisible = false
+    private lateinit var loginButton: Button
+    private lateinit var emailInput: EditText
+    private lateinit var passwordInput: EditText
+    private lateinit var buttonProgressBar: ProgressBar
+    private var originalButtonText: String = ""
+    private var originalButtonBackgroundTint: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +51,17 @@ class LoginActivity : AppCompatActivity() {
         )
         fitMeText.text = styledText
 
-        val emailInput = findViewById<EditText>(R.id.editTextEmail)
-        val passwordInput = findViewById<EditText>(R.id.editTextPassword)
+        emailInput = findViewById<EditText>(R.id.editTextEmail)
+        passwordInput = findViewById<EditText>(R.id.editTextPassword)
         val passwordToggle = findViewById<ImageView>(R.id.passwordToggle)
-        val loginButton = findViewById<Button>(R.id.buttonLogin)
+        loginButton = findViewById<Button>(R.id.buttonLogin)
+        buttonProgressBar = findViewById<ProgressBar>(R.id.buttonProgressBar)
         val signUpLink = findViewById<TextView>(R.id.textSignUp)
         val forgotPasswordText = findViewById<TextView>(R.id.textForgotPassword)
+
+        // Store original button state
+        originalButtonText = loginButton.text.toString()
+        originalButtonBackgroundTint = ContextCompat.getColor(this, R.color.orange_500)
 
         signUpLink.paintFlags = signUpLink.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         forgotPasswordText.paintFlags = forgotPasswordText.paintFlags or Paint.UNDERLINE_TEXT_FLAG
@@ -80,10 +94,12 @@ class LoginActivity : AppCompatActivity() {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Email and password are required.", Toast.LENGTH_SHORT).show()
             } else {
+                showLoading()
                 val loginRequest = LoginRequest(email, password)
 
                 RetrofitClient.auth.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                        hideLoading()
                         println(response.toString())
                         if (response.isSuccessful) {
                             val user = response.body()?.user
@@ -125,10 +141,39 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        hideLoading()
                         Toast.makeText(this@LoginActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
                     }
                 })
             }
         }
+    }
+
+    private fun showLoading() {
+        // Disable button and show loading state
+        loginButton.isEnabled = false
+        loginButton.text = "Logging in..."
+        loginButton.backgroundTintList = ContextCompat.getColorStateList(this, android.R.color.darker_gray)
+        
+        // Show progress bar
+        buttonProgressBar.visibility = View.VISIBLE
+        
+        // Disable input fields
+        emailInput.isEnabled = false
+        passwordInput.isEnabled = false
+    }
+
+    private fun hideLoading() {
+        // Re-enable button and restore original state
+        loginButton.isEnabled = true
+        loginButton.text = originalButtonText
+        loginButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.orange_500)
+        
+        // Hide progress bar
+        buttonProgressBar.visibility = View.GONE
+        
+        // Re-enable input fields
+        emailInput.isEnabled = true
+        passwordInput.isEnabled = true
     }
 }
