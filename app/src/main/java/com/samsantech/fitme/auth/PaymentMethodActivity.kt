@@ -282,11 +282,26 @@ class PaymentMethodActivity : AppCompatActivity() {
                     val intent = when (selectedMethod) {
                         "CASH" -> Intent(this@PaymentMethodActivity, CashPendingActivity::class.java)
                         "ONLINE_PAYMENT" -> Intent(this@PaymentMethodActivity, PaymentActivity::class.java)
-                        else -> Intent(this@PaymentMethodActivity, SuccessActivity::class.java)
+                        else -> {
+                            // For non-online payments, go directly to success and refresh membership
+                            val successIntent = Intent(this@PaymentMethodActivity, SuccessActivity::class.java)
+                            successIntent.putExtra("isUpgrade", true)
+                            successIntent.putExtra("selectedPlan", selectedPlan)
+                            successIntent.putExtra("selectedPrice", priceInt)
+                            successIntent.putExtra("refreshMembership", true)
+                            successIntent
+                        }
                     }
-                    intent.putExtra("selectedPrice", priceInt)
-                    intent.putExtra("selectedPlan", selectedPlan)
-                    intent.putExtra("isUpgrade", true)
+                    if (selectedMethod != "CASH" && selectedMethod != "ONLINE_PAYMENT") {
+                        intent.putExtra("selectedPrice", priceInt)
+                        intent.putExtra("selectedPlan", selectedPlan)
+                        intent.putExtra("isUpgrade", true)
+                        intent.putExtra("refreshMembership", true)
+                    } else {
+                        intent.putExtra("selectedPrice", priceInt)
+                        intent.putExtra("selectedPlan", selectedPlan)
+                        intent.putExtra("isUpgrade", true)
+                    }
                     startActivity(intent)
                     finish()
                 } else {

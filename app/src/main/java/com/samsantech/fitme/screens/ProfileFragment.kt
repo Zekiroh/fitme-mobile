@@ -33,6 +33,16 @@ class ProfileFragment : Fragment() {
         val fullName = sharedPref.getString("full_name", "Guest")
         binding.name.text = fullName  // assuming your TextView in XML has id = "name"
 
+        // Check if we should auto-navigate to membership details (after upgrade)
+        val refreshMembershipDetails = requireActivity().intent.getBooleanExtra("refreshMembershipDetails", false)
+        if (refreshMembershipDetails) {
+            // Auto-navigate to membership details to show updated plan
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment, MembershipDetailsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         binding.btnProfile.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.nav_host_fragment, MyProfileFragment())

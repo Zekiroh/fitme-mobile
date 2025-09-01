@@ -17,6 +17,7 @@ class SuccessActivity : AppCompatActivity() {
         val isUpgrade = intent.getBooleanExtra("isUpgrade", false)
         val selectedPlan = intent.getStringExtra("selectedPlan") ?: ""
         val selectedPrice = intent.getIntExtra("selectedPrice", 0)
+        val refreshMembership = intent.getBooleanExtra("refreshMembership", false)
 
         // Update UI based on whether it's registration or upgrade
         val titleText = findViewById<TextView>(R.id.titleText)
@@ -33,6 +34,10 @@ class SuccessActivity : AppCompatActivity() {
                 // Navigate to MainActivity (which will show the profile)
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                if (refreshMembership) {
+                    // Signal that membership details should be refreshed
+                    intent.putExtra("refreshMembershipDetails", true)
+                }
                 startActivity(intent)
             }
         } else {

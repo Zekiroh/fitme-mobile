@@ -64,7 +64,14 @@ class PaymentActivity : AppCompatActivity() {
                                 val result = response.body()
 //
                                 if (response.isSuccessful && result?.success == true) {
-                                    startActivity(Intent(this@PaymentActivity, SuccessActivity::class.java))
+                                    val successIntent = Intent(this@PaymentActivity, SuccessActivity::class.java)
+                                    successIntent.putExtra("isUpgrade", isUpgrade)
+                                    successIntent.putExtra("selectedPlan", selectedPlan)
+                                    successIntent.putExtra("selectedPrice", selectedPrice)
+                                    if (isUpgrade) {
+                                        successIntent.putExtra("refreshMembership", true)
+                                    }
+                                    startActivity(successIntent)
                                     finish()
                                 } else {
                                     // ❌ Show error or finish

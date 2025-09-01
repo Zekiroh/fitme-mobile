@@ -15,9 +15,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        val refreshMembershipDetails = intent.getBooleanExtra("refreshMembershipDetails", false)
 
         // Default fragment
-        loadFragment(ProgressFragment())
+        if (refreshMembershipDetails) {
+            // If coming from upgrade success, go directly to profile
+            loadFragment(ProfileFragment())
+            bottomNav.selectedItemId = R.id.nav_profile
+        } else {
+            loadFragment(ProgressFragment())
+        }
 
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {

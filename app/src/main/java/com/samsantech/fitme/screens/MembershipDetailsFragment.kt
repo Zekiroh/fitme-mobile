@@ -19,6 +19,8 @@ import com.samsantech.fitme.utils.ApiTestHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MembershipDetailsFragment : Fragment() {
 
@@ -29,11 +31,122 @@ class MembershipDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_membership_detailss, container, false)
     }
 
+    private fun formatDate(dateString: String?): String {
+        if (dateString.isNullOrEmpty() || dateString == "N/A") {
+            return "N/A"
+        }
+        
+        Log.d("DateFormat", "Attempting to format date: '$dateString'")
+        
+        return try {
+            // Try to parse common date formats
+            val inputFormats = listOf(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",  // 2026-03-01T16:00:00.000Z
+                "yyyy-MM-dd'T'HH:mm:ss'Z'",      // 2026-03-01T16:00:00Z
+                "yyyy-MM-dd'T'HH:mm:ss.SSS",     // 2026-03-01T16:00:00.000
+                "yyyy-MM-dd'T'HH:mm:ss",         // 2026-03-01T16:00:00
+                "yyyy-MM-dd HH:mm:ss",           // 2026-03-01 16:00:00
+                "yyyy-MM-dd",                    // 2026-03-01
+                "MM/dd/yyyy",                    // 03/01/2026
+                "dd/MM/yyyy"                     // 01/03/2026
+            )
+            
+            var parsedDate: Date? = null
+            var usedFormat: String? = null
+            
+            for (format in inputFormats) {
+                try {
+                    val sdf = SimpleDateFormat(format, Locale.getDefault())
+                    // Set timezone to UTC for 'Z' format
+                    if (format.contains("'Z'")) {
+                        sdf.timeZone = TimeZone.getTimeZone("UTC")
+                    }
+                    parsedDate = sdf.parse(dateString)
+                    if (parsedDate != null) {
+                        usedFormat = format
+                        Log.d("DateFormat", "Successfully parsed '$dateString' using format '$format'")
+                        break
+                    }
+                } catch (e: Exception) {
+                    Log.d("DateFormat", "Failed to parse '$dateString' with format '$format': ${e.message}")
+                    // Continue to next format
+                }
+            }
+            
+            if (parsedDate != null) {
+                val now = Date()
+                val diffInMillis = parsedDate.time - now.time
+                val diffInDays = diffInMillis / (24 * 60 * 60 * 1000)
+                
+                // Format to user-friendly display with relative time
+                val outputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                val formattedDate = outputFormat.format(parsedDate)
+                
+                when {
+                    diffInDays < 0 -> "$formattedDate (Expired)"
+                    diffInDays == 0L -> "$formattedDate (Expires today)"
+                    diffInDays == 1L -> "$formattedDate (1 day remaining)"
+                    diffInDays < 7 -> "$formattedDate ($diffInDays days remaining)"
+                    diffInDays < 30 -> "$formattedDate (${diffInDays / 7} weeks remaining)"
+                    else -> "$formattedDate (${diffInDays / 30} months remaining)"
+                }
+            } else {
+                // If parsing fails, try one more approach for ISO 8601 with Z
+                Log.d("DateFormat", "All formats failed, trying manual parsing for: $dateString")
+                try {
+                    // Handle the specific case: 2026-03-01T16:00:00.000Z
+                    if (dateString.matches(Regex("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z"))) {
+                        val cleanDate = dateString.replace("T", " ").replace("Z", "").substring(0, 19)
+                        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                        sdf.timeZone = TimeZone.getTimeZone("UTC")
+                        val parsedDate = sdf.parse(cleanDate)
+                        if (parsedDate != null) {
+                            val outputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                            val formattedDate = outputFormat.format(parsedDate)
+                            val now = Date()
+                            val diffInMillis = parsedDate.time - now.time
+                            val diffInDays = diffInMillis / (24 * 60 * 60 * 1000)
+                            
+                            return when {
+                                diffInDays < 0 -> "$formattedDate (Expired)"
+                                diffInDays == 0L -> "$formattedDate (Expires today)"
+                                diffInDays == 1L -> "$formattedDate (1 day remaining)"
+                                diffInDays < 7 -> "$formattedDate ($diffInDays days remaining)"
+                                diffInDays < 30 -> "$formattedDate (${diffInDays / 7} weeks remaining)"
+                                else -> "$formattedDate (${diffInDays / 30} months remaining)"
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("DateFormat", "Manual parsing also failed: ${e.message}")
+                }
+                
+                // If all parsing fails, return original string
+                dateString
+            }
+        } catch (e: Exception) {
+            Log.e("DateFormat", "Error formatting date: $dateString", e)
+            dateString
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         fetchMembershipDetails()
         setupChangePlanButton()
+        
+        // Check if this fragment was loaded after an upgrade to show updated data
+        val refreshMembershipDetails = requireActivity().intent.getBooleanExtra("refreshMembershipDetails", false)
+        if (refreshMembershipDetails) {
+            // Show a toast to indicate membership was updated
+            android.widget.Toast.makeText(requireContext(), "Membership updated! Refreshing details...", android.widget.Toast.LENGTH_SHORT).show()
+            
+            // Add a small delay to ensure the backend has processed the upgrade
+            view.postDelayed({
+                fetchMembershipDetails()
+            }, 1000)
+        }
     }
 
     private fun setupChangePlanButton() {
@@ -81,7 +194,7 @@ class MembershipDetailsFragment : Fragment() {
                             val memberShip = view?.findViewById<TextView>(R.id.value_membership_ends)
                             
                             valuePlan?.text = membershipData?.plan ?: "N/A"
-                            memberShip?.text = membershipData?.endDate ?: "N/A"
+                            memberShip?.text = formatDate(membershipData?.endDate)
                             
                             Log.d("MembershipDetails", "Membership loaded successfully: ${membershipData?.plan}")
                         } else {
@@ -111,7 +224,7 @@ class MembershipDetailsFragment : Fragment() {
                         val valuePlan = view?.findViewById<TextView>(R.id.value_plan)
                         val memberShip = view?.findViewById<TextView>(R.id.value_membership_ends)
                         valuePlan?.text = subscription?.plan ?: "N/A"
-                        memberShip?.text = subscription?.startDate ?: "N/A"
+                        memberShip?.text = formatDate(subscription?.startDate)
                         Log.d("MembershipDetails", "Fallback API loaded successfully")
                     } else {
                         Log.e("MembershipDetails", "Both APIs failed: ${response.code()}")

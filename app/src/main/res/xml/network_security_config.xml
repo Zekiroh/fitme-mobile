@@ -5,6 +5,6 @@
 <!--        <domain includeSubdomains="true">192.168.1.129</domain>-->
 <!--        <domain includeSubdomains="true">iavnscdgtc.a.pinggy.link</domain>-->
 <!--        <domain includeSubdomains="true">60c187645b0f.ngrok-free.app</domain>-->
-        <domain includeSubdomains="true">6aa0ee346c21.ngrok-free.app</domain>
+        <domain includeSubdomains="true">a20cef972f9f.ngrok-free.app</domain>
     </domain-config>
 </network-security-config>
