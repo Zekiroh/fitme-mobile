@@ -101,6 +101,10 @@
     <string name="membershipdetails">Membership Details: </string>
     <string name="plan">My Plan: </string>
     <string name="membershipends">Membership Ends: </string>
+    <string name="change_plan">Change Plan</string>
+    <string name="upgrade_membership">Upgrade Your Membership</string>
+    <string name="choose_plan_description">Choose a plan that fits your fitness goals</string>
+    <string name="continue_to_payment">Continue to Payment</string>
 
     <!-- fragment_feedback strings-->
     <string name="feedback">We\'d Love Your Feedback!</string>

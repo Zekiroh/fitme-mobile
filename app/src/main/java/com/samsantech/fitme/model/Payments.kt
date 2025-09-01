@@ -65,3 +65,54 @@ data class Plan(
     @SerializedName("is_active")
     val isActive: Int
 )
+
+data class MembershipUpgradeRequest(
+    @SerializedName("user_id")
+    val userId: Int,
+    @SerializedName("plan")
+    val plan: String,
+    @SerializedName("price")
+    val price: Int,
+    @SerializedName("payment_method")
+    val paymentMethod: String,
+    @SerializedName("gcash_number")
+    val gcashNumber: String? = null,
+    @SerializedName("gcash_name")
+    val gcashName: String? = null,
+    @SerializedName("card_number")
+    val cardNumber: String? = null,
+    @SerializedName("card_name")
+    val cardName: String? = null,
+    @SerializedName("card_expiry")
+    val cardExpiry: String? = null,
+    @SerializedName("card_cvv")
+    val cardCvv: String? = null
+)
+
+data class MembershipUpgradeResponse(
+    @SerializedName("success")
+    val success: Boolean,
+    @SerializedName("message")
+    val message: String,
+    @SerializedName("data")
+    val data: MembershipUpgradeData? = null
+)
+
+data class MembershipUpgradeData(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("user_id")
+    val userId: Int,
+    @SerializedName("plan")
+    val plan: String,
+    @SerializedName("price")
+    val price: Int,
+    @SerializedName("payment_method")
+    val paymentMethod: String,
+    @SerializedName("status")
+    val status: String,
+    @SerializedName("end_date")
+    val endDate: String,
+    @SerializedName("created_at")
+    val createdAt: String
+)

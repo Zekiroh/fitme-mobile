@@ -35,9 +35,16 @@ class PaymentActivity : AppCompatActivity() {
         val webView: WebView = findViewById(R.id.webView)
         val selectedPlan = intent.getStringExtra("selectedPlan")
         val selectedPrice = intent.getIntExtra("selectedPrice", 0)
+        val isUpgrade = intent.getBooleanExtra("isUpgrade", false)
+
+        println("🔍 PaymentActivity Debug:")
+        println("   - User: $user")
+        println("   - Selected Plan: $selectedPlan")
+        println("   - Selected Price: $selectedPrice")
+        println("   - Is Upgrade: $isUpgrade")
 
         user?.let { data ->
-            println(data.id)
+            println("✅ User found: ID=${data.id}, Name=${data.fullName}")
             // Set up WebView
             webView.settings.javaScriptEnabled = true
             webView.webViewClient = object : WebViewClient() {
@@ -76,34 +83,54 @@ class PaymentActivity : AppCompatActivity() {
             }
 
             // Request payment and load checkout URL
-            RetrofitClient.payments.paymentCheckouts(
-                PaymentRequest(
-                    userId = data.id,
-                    plan = selectedPlan?:"",
-                    amount = selectedPrice * 100,
-                    description = "Payment for Starter Plan"
-                )
-            ).enqueue(object : Callback<PaymentResponse> {
-                override fun onResponse(
-                    call: Call<PaymentResponse?>,
-                    response: Response<PaymentResponse?>
-                ) {
-                    val res = response.body()
-                    if (response.isSuccessful && res != null) {
-                        referenceNumber = res.referenceNumber
-                        webView.loadUrl(res.checkoutUrl)
-                    } else {
-                        println("❌ Payment checkout failed")
+            val paymentRequest = PaymentRequest(
+                userId = data.id,
+                plan = selectedPlan ?: "",
+                amount = selectedPrice * 100,
+                description = "Payment for $selectedPlan"
+            )
+            
+            println("🔄 Initiating payment checkout for user: ${data.id}, plan: $selectedPlan, amount: $selectedPrice")
+            
+            RetrofitClient.payments.paymentCheckouts(paymentRequest)
+                .enqueue(object : Callback<PaymentResponse> {
+                    override fun onResponse(
+                        call: Call<PaymentResponse?>,
+                        response: Response<PaymentResponse?>
+                    ) {
+                        println("📡 Payment checkout response: ${response.code()}")
+                        
+                        if (response.isSuccessful) {
+                            val res = response.body()
+                            if (res != null && !res.checkoutUrl.isNullOrEmpty()) {
+                                referenceNumber = res.referenceNumber
+                                println("✅ Payment checkout successful, loading URL: ${res.checkoutUrl}")
+                                webView.loadUrl(res.checkoutUrl)
+                            } else {
+                                println("❌ Payment checkout failed: Empty response body or checkout URL")
+                                println("Response body: $res")
+                                finish()
+                            }
+                        } else {
+                            val errorBody = response.errorBody()?.string()
+                            println("❌ Payment checkout failed: ${response.code()}")
+                            println("Error body: $errorBody")
+                            finish()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<PaymentResponse?>, t: Throwable) {
+                        println("❌ Payment API error: ${t.message}")
+                        t.printStackTrace()
                         finish()
                     }
-                }
-
-                override fun onFailure(call: Call<PaymentResponse?>, t: Throwable) {
-                    println("❌ Payment API error: ${t.message}")
-                    finish()
-                }
-            })
-        } ?: finish() // If user is null, close activity
+                })
+        } ?: run {
+            println("❌ No user found in PaymentActivity - this should not happen!")
+            println("   - Check if user was saved properly during registration")
+            println("   - Check SharedPrefHelper.getLoggedInUser() implementation")
+            finish()
+        }
     }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {

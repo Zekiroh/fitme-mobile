@@ -10,11 +10,13 @@ import retrofit2.create
 
 object RetrofitClient {
 //    private const val LOCAL_URL = "http://192.168.1.129:5291/api/"
-    private const val LOCAL_URL = "https://iavnscdgtc.a.pinggy.link/api/"
+//    private const val LOCAL_URL = "https://iavnscdgtc.a.pinggy.link/api/"
+    private const val LOCAL_URL = "https://6aa0ee346c21.ngrok-free.app/api/"
+//    private const val LOCAL_URL = "https://60c187645b0f.ngrok-free.app/api/"
     private const val PROD_URL = "https://fitmegym.com/api/"
 
     // Change this value to switch environment
-    private const val USE_LOCAL = false
+    private const val USE_LOCAL = true
 
     private val BASE_URL = if (USE_LOCAL) LOCAL_URL else PROD_URL
 

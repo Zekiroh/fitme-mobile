@@ -55,9 +55,21 @@
             android:id="@+id/value_membership_ends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             android:text="N/A"
             android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/button_change_plan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/change_plan"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rounded_button"
+            android:padding="16dp"
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 </ScrollView>

@@ -27,6 +27,9 @@ import retrofit2.Response
 import androidx.core.graphics.toColorInt
 import com.samsantech.fitme.model.ApiErrorResponse
 import com.samsantech.fitme.payments.PaymentActivity
+import com.samsantech.fitme.model.MembershipUpgradeRequest
+import com.samsantech.fitme.model.MembershipUpgradeResponse
+import com.samsantech.fitme.components.SharedPrefHelper
 
 class PaymentMethodActivity : AppCompatActivity() {
 
@@ -224,78 +227,169 @@ class PaymentMethodActivity : AppCompatActivity() {
         }
 
         buttonPay.setOnClickListener {
-            val fullName = intent.getStringExtra("fullName") ?: ""
-            val username = intent.getStringExtra("username") ?: ""
-            val email = intent.getStringExtra("email") ?: ""
-            val password = intent.getStringExtra("password") ?: ""
-            val selectedPrice = intent.getStringExtra("selectedPrice")?.replace("₱", "")?.replace(",", "") ?: ""
+            val isUpgrade = intent.getBooleanExtra("isUpgrade", false)
+            
+            if (isUpgrade) {
+                handleMembershipUpgrade()
+            } else {
+                handleUserRegistration()
+            }
+        }
+    }
 
-            val priceInt = selectedPrice.toIntOrNull() ?: 0
+    private fun handleMembershipUpgrade() {
+        val selectedPlan = intent.getStringExtra("selectedPlan") ?: ""
+        val selectedPrice = intent.getStringExtra("selectedPrice")?.replace("₱", "")?.replace(",", "") ?: ""
+        val priceInt = selectedPrice.toIntOrNull() ?: 0
 
-            if (priceInt == 0) {
-                Toast.makeText(this, "Invalid price. Cannot proceed.", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
+        if (priceInt == 0) {
+            Toast.makeText(this, "Invalid price. Cannot proceed.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val user = SharedPrefHelper.getLoggedInUser(this)
+        if (user == null) {
+            Toast.makeText(this, "User not found. Please login again.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val gcashNumber: String? = findViewById<EditText?>(R.id.gcashNumber)?.text?.toString()?.trim()
+        val gcashName: String? = findViewById<EditText?>(R.id.gcashName)?.text?.toString()?.trim()
+        val cardNumber: String? = findViewById<EditText?>(R.id.cardNumber)?.text?.toString()?.trim()
+        val cardName: String? = findViewById<EditText?>(R.id.cardName)?.text?.toString()?.trim()
+        val cardExpiry: String? = findViewById<EditText?>(R.id.cardExpiry)?.text?.toString()?.trim()
+        val cardCvv: String? = findViewById<EditText?>(R.id.cardCvv)?.text?.toString()?.trim()
+
+        val request = MembershipUpgradeRequest(
+            userId = user.id,
+            plan = selectedPlan,
+            price = priceInt,
+            paymentMethod = selectedMethod,
+            gcashNumber = if (selectedMethod == "GCASH") gcashNumber else null,
+            gcashName = if (selectedMethod == "GCASH" && !gcashName.isNullOrBlank()) gcashName else null,
+            cardNumber = if (selectedMethod == "CARD") cardNumber else null,
+            cardName = if (selectedMethod == "CARD") cardName else null,
+            cardExpiry = if (selectedMethod == "CARD") cardExpiry else null,
+            cardCvv = if (selectedMethod == "CARD") cardCvv else null
+        )
+
+        Log.d("UPGRADE_DEBUG", Gson().toJson(request))
+        
+        RetrofitClient.payments.upgradeMembership(request).enqueue(object : Callback<MembershipUpgradeResponse> {
+            override fun onResponse(call: Call<MembershipUpgradeResponse>, response: Response<MembershipUpgradeResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    // Handle successful upgrade
+                    val intent = when (selectedMethod) {
+                        "CASH" -> Intent(this@PaymentMethodActivity, CashPendingActivity::class.java)
+                        "ONLINE_PAYMENT" -> Intent(this@PaymentMethodActivity, PaymentActivity::class.java)
+                        else -> Intent(this@PaymentMethodActivity, SuccessActivity::class.java)
+                    }
+                    intent.putExtra("selectedPrice", priceInt)
+                    intent.putExtra("selectedPlan", selectedPlan)
+                    intent.putExtra("isUpgrade", true)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    val errorBody = response.errorBody()
+                    val errorString = errorBody?.string()
+                    val errorMsg = if (!errorString.isNullOrEmpty()) {
+                        try {
+                            val gson = Gson()
+                            val apiError = gson.fromJson(errorString, ApiErrorResponse::class.java)
+                            apiError.error?.sqlMessage ?: apiError.message ?: "Upgrade failed. Please try again."
+                        } catch (e: Exception) {
+                            Log.e("UPGRADE_DEBUG", "Error parsing response: ${e.message}")
+                            "Upgrade failed. Please try again."
+                        }
+                    } else {
+                        "Upgrade failed. Please try again."
+                    }
+                    
+                    Log.e("UPGRADE_DEBUG", "Upgrade failed: ${response.code()} - $errorMsg")
+                    Toast.makeText(this@PaymentMethodActivity, errorMsg, Toast.LENGTH_LONG).show()
+                }
             }
 
-            val gcashNumber: String? = findViewById<EditText?>(R.id.gcashNumber)?.text?.toString()?.trim()
-            val gcashName: String? = findViewById<EditText?>(R.id.gcashName)?.text?.toString()?.trim()
-            val cardNumber: String? = findViewById<EditText?>(R.id.cardNumber)?.text?.toString()?.trim()
-            val cardName: String? = findViewById<EditText?>(R.id.cardName)?.text?.toString()?.trim()
-            val cardExpiry: String? = findViewById<EditText?>(R.id.cardExpiry)?.text?.toString()?.trim()
-            val cardCvv: String? = findViewById<EditText?>(R.id.cardCvv)?.text?.toString()?.trim()
+            override fun onFailure(call: Call<MembershipUpgradeResponse>, t: Throwable) {
+                Log.e("UPGRADE_DEBUG", "Network error: ${t.message}")
+                Toast.makeText(this@PaymentMethodActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
 
-            val request = RegisterRequest(
-                full_name = fullName,
-                username = username,
-                email = email,
-                password = password,
-                plan = selectedPlan,
-                price = priceInt,
-                payment_method = selectedMethod,
-                gcash_number = if (selectedMethod == "GCASH") gcashNumber else null,
-                gcash_name = if (selectedMethod == "GCASH" && !gcashName.isNullOrBlank()) gcashName else null,
-                card_number = if (selectedMethod == "CARD") cardNumber else null,
-                card_name = if (selectedMethod == "CARD") cardName else null,
-                card_expiry = if (selectedMethod == "CARD") cardExpiry else null,
-                card_cvv = if (selectedMethod == "CARD") cardCvv else null
-            )
+    private fun handleUserRegistration() {
+        val fullName = intent.getStringExtra("fullName") ?: ""
+        val username = intent.getStringExtra("username") ?: ""
+        val email = intent.getStringExtra("email") ?: ""
+        val password = intent.getStringExtra("password") ?: ""
+        val selectedPlan = intent.getStringExtra("selectedPlan") ?: ""
+        val selectedPrice = intent.getStringExtra("selectedPrice")?.replace("₱", "")?.replace(",", "") ?: ""
 
-            Log.d("REGISTER_DEBUG", Gson().toJson(request))
-            RetrofitClient.auth.registerUser(request).enqueue(object : Callback<RegisterResponse> {
-                override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-                    if (response.isSuccessful && response.body()?.success == true) {
-                        val user = response.body()?.user
-                        val sharedPrefUsersInfo = getSharedPreferences("usersInfo",MODE_PRIVATE)
-                        sharedPrefUsersInfo.edit().apply {
-                            val gson = Gson()
-                            val userJson = gson.toJson(user)
-                            putString("user_data", userJson)
-                            apply()
-                        }
-                        val intent = when (selectedMethod) {
-                            "CASH" -> Intent(this@PaymentMethodActivity, CashPendingActivity::class.java)
-                            "ONLINE_PAYMENT" -> Intent(this@PaymentMethodActivity, PaymentActivity::class.java)
-                            else -> Intent(this@PaymentMethodActivity, SuccessActivity::class.java)
-                        }
-                        intent.putExtra("selectedPrice", priceInt)
-                        intent.putExtra("selectedPlan", selectedPlan)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        val errorBody = response.errorBody()
-                        val errorString = errorBody?.string()
+        val priceInt = selectedPrice.toIntOrNull() ?: 0
 
-                        val gson = Gson()
-                        val apiError = gson.fromJson(errorString, ApiErrorResponse::class.java)
-                        val errorMsg = apiError.error?.sqlMessage ?: apiError.message
-
-                        Toast.makeText(this@PaymentMethodActivity, errorMsg, Toast.LENGTH_LONG).show()
-                    } }
-
-                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                    Toast.makeText(this@PaymentMethodActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
-                }
-            })
+        if (priceInt == 0) {
+            Toast.makeText(this, "Invalid price. Cannot proceed.", Toast.LENGTH_LONG).show()
+            return
         }
+
+        val gcashNumber: String? = findViewById<EditText?>(R.id.gcashNumber)?.text?.toString()?.trim()
+        val gcashName: String? = findViewById<EditText?>(R.id.gcashName)?.text?.toString()?.trim()
+        val cardNumber: String? = findViewById<EditText?>(R.id.cardNumber)?.text?.toString()?.trim()
+        val cardName: String? = findViewById<EditText?>(R.id.cardName)?.text?.toString()?.trim()
+        val cardExpiry: String? = findViewById<EditText?>(R.id.cardExpiry)?.text?.toString()?.trim()
+        val cardCvv: String? = findViewById<EditText?>(R.id.cardCvv)?.text?.toString()?.trim()
+
+        val request = RegisterRequest(
+            full_name = fullName,
+            username = username,
+            email = email,
+            password = password,
+            plan = selectedPlan,
+            price = priceInt,
+            payment_method = selectedMethod,
+            gcash_number = if (selectedMethod == "GCASH") gcashNumber else null,
+            gcash_name = if (selectedMethod == "GCASH" && !gcashName.isNullOrBlank()) gcashName else null,
+            card_number = if (selectedMethod == "CARD") cardNumber else null,
+            card_name = if (selectedMethod == "CARD") cardName else null,
+            card_expiry = if (selectedMethod == "CARD") cardExpiry else null,
+            card_cvv = if (selectedMethod == "CARD") cardCvv else null
+        )
+
+        Log.d("REGISTER_DEBUG", Gson().toJson(request))
+        RetrofitClient.auth.registerUser(request).enqueue(object : Callback<RegisterResponse> {
+            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val user = response.body()?.user
+                    val sharedPrefUsersInfo = getSharedPreferences("usersInfo",MODE_PRIVATE)
+                    sharedPrefUsersInfo.edit().apply {
+                        val gson = Gson()
+                        val userJson = gson.toJson(user)
+                        putString("user_data", userJson)
+                        apply()
+                    }
+                    val intent = when (selectedMethod) {
+                        "CASH" -> Intent(this@PaymentMethodActivity, CashPendingActivity::class.java)
+                        "ONLINE_PAYMENT" -> Intent(this@PaymentMethodActivity, PaymentActivity::class.java)
+                        else -> Intent(this@PaymentMethodActivity, SuccessActivity::class.java)
+                    }
+                    intent.putExtra("selectedPrice", priceInt)
+                    intent.putExtra("selectedPlan", selectedPlan)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    val errorBody = response.errorBody()
+                    val errorString = errorBody?.string()
+
+                    val gson = Gson()
+                    val apiError = gson.fromJson(errorString, ApiErrorResponse::class.java)
+                    val errorMsg = apiError.error?.sqlMessage ?: apiError.message
+
+                    Toast.makeText(this@PaymentMethodActivity, errorMsg, Toast.LENGTH_LONG).show()
+                } }
+
+            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                Toast.makeText(this@PaymentMethodActivity, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
     }
 }

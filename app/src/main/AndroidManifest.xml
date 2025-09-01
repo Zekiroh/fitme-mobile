@@ -59,6 +59,10 @@
             android:label="Membership Plan"
             android:theme="@style/Theme.FitMe" />
         <activity
+            android:name=".auth.MembershipUpgradeActivity"
+            android:label="Upgrade Membership"
+            android:theme="@style/Theme.FitMe" />
+        <activity
             android:name=".auth.PaymentMethodActivity"
             android:label="Payment Method"
             android:theme="@style/Theme.FitMe" /> <!-- Payment Result Screens -->

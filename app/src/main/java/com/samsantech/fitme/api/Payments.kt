@@ -6,6 +6,8 @@ import com.samsantech.fitme.model.PaymentRequestCallback
 import com.samsantech.fitme.model.PaymentResponse
 import com.samsantech.fitme.model.PaymentStatusResponse
 import com.samsantech.fitme.model.PlanResponse
+import com.samsantech.fitme.model.MembershipUpgradeRequest
+import com.samsantech.fitme.model.MembershipUpgradeResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,4 +23,10 @@ interface Payments {
 
     @GET("payment/get-plan")
     fun getPlans(): Call<PlanResponse>
+
+    @POST("payment/upgrade-membership")
+    fun upgradeMembership(@Body request: MembershipUpgradeRequest): Call<MembershipUpgradeResponse>
+
+    @GET("payment/membership/{user_id}")
+    fun getCurrentMembership(@Path("user_id") userId: Int): Call<MembershipUpgradeResponse>
 }
